@@ -2,7 +2,7 @@ import json
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from reranker import Reranker
+from RAG.reranker import Reranker
 
 class RAG:
     def __init__(self, docs_path="documents.json", embedding_model="all-MiniLM-L6-v2"):
