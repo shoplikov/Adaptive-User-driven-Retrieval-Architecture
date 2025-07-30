@@ -1,0 +1,12 @@
+[
+  {
+    "conversation_id": "abc123",
+    "turns": [
+      { "role": "user", "text": "Explain how solar panels work." },
+      { "role": "assistant", "text": "Solar panels convert sunlight into electricity..." },
+      { "role": "user", "text": "That’s confusing, can you simplify?" },
+      { "role": "assistant", "text": "Think of them like batteries charged by sunlight..." },
+      { "role": "user", "text": "Ah got it, thanks!" }
+    ]
+  }
+]

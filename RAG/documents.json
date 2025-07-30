@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "title": "Python Basics",
+    "content": "Python is an interpreted high-level programming language for general-purpose programming."
+  },
+  {
+    "id": 2,
+    "title": "OpenAI",
+    "content": "OpenAI develops artificial intelligence models such as GPT and DALL-E."
+  },
+  {
+    "id": 3,
+    "title": "FAISS",
+    "content": "FAISS is a library for efficient similarity search and clustering of dense vectors."
+  },
+  {
+    "id": 4,
+    "title": "Quantum Sandwich",
+    "content": "A sandwich that exists in multiple states until you eat it, then collapses into a BLT."
+  },
+  {
+    "id": 5,
+    "title": "Banana Economy",
+    "content": "In 2042, bananas replaced gold as the global currency due to their potassium-backed stability."
+  },
+  {
+    "id": 6,
+    "title": "Space Goats",
+    "content": "NASA’s secret mission involves training goats to graze on Martian grass once terraforming begins."
+  },
+  {
+    "id": 7,
+    "title": "JavaScript",
+    "content": "JavaScript is a versatile language primarily used for web development and interactive UI elements."
+  },
+  {
+    "id": 8,
+    "title": "Infinite Toast",
+    "content": "Physicists have theorized about an infinite toast loop where bread continuously falls butter-side down."
+  },
+  {
+    "id": 9,
+    "title": "Neural Networks",
+    "content": "Neural networks are a subset of machine learning algorithms inspired by the human brain."
+  },
+  {
+    "id": 10,
+    "title": "Pineapple on Mars",
+    "content": "The first Martian colony rejected pineapple pizza, sparking interplanetary culinary debates."
+  },
+  {
+    "id": 11,
+    "title": "Rust Programming",
+    "content": "Rust is a systems programming language focused on safety and performance without garbage collection."
+  },
+  {
+    "id": 12,
+    "title": "Cabbage Wars",
+    "content": "A forgotten conflict where medieval farmers fought over the rightful ownership of giant cabbages."
+  },
+  {
+    "id": 13,
+    "title": "AI Ethics",
+    "content": "Ethics in AI focuses on fairness, transparency, and accountability in algorithmic decision-making."
+  },
+  {
+    "id": 14,
+    "title": "Sock Dimensions",
+    "content": "String theory suggests the existence of socks in 11 dimensions, each mismatched by default."
+  },
+  {
+    "id": 15,
+    "title": "Kangaroo Internet",
+    "content": "Australia briefly considered using kangaroos as mobile internet towers in remote regions."
+  },
+  {
+    "id": 16,
+    "title": "C++",
+    "content": "C++ is a powerful object-oriented programming language commonly used for systems and game development."
+  },
+  {
+    "id": 17,
+    "title": "Underwater Laptops",
+    "content": "Experimental waterproof laptops designed for deep-sea coding competitions in the Atlantic."
+  },
+  {
+    "id": 18,
+    "title": "Robot Poetry",
+    "content": "AI-generated poetry often explores themes of silicon loneliness and binary love."
+  },
+  {
+    "id": 19,
+    "title": "Interdimensional Coffee",
+    "content": "This coffee exists across all universes, providing caffeine boosts to infinite beings simultaneously."
+  },
+  {
+    "id": 20,
+    "title": "BananaOS",
+    "content": "An operating system entirely themed around bananas, featuring peel-based UI animations."
+  },
+  {
+    "id": 21,
+    "title": "Duck Encryption",
+    "content": "A cryptographic method where quacks replace binary bits for ultimate secrecy."
+  },
+  {
+    "id": 22,
+    "title": "SQL",
+    "content": "SQL is a domain-specific language used to manage and query relational databases."
+  },
+  {
+    "id": 23,
+    "title": "Time Travel Socks",
+    "content": "Wearing these socks allegedly allows you to witness laundry events from the future."
+  },
+  {
+    "id": 24,
+    "title": "Cybernetic Bees",
+    "content": "Bees augmented with microchips now perform both pollination and Wi-Fi hotspot duties."
+  },
+  {
+    "id": 25,
+    "title": "PHP",
+    "content": "PHP is a server-side scripting language widely used for web development."
+  },
+  {
+    "id": 26,
+    "title": "Spaghetti Black Hole",
+    "content": "A black hole entirely made of spaghetti strands, rumored to exist in the Pasta Nebula."
+  },
+  {
+    "id": 27,
+    "title": "AI Lawyer",
+    "content": "AI systems are now assisting lawyers with case research, brief drafting, and legal predictions."
+  },
+  {
+    "id": 28,
+    "title": "Flying Desks",
+    "content": "Office furniture equipped with drones allows workers to commute mid-air between skyscrapers."
+  },
+  {
+    "id": 29,
+    "title": "Blockchain Pickles",
+    "content": "Each pickle jar is verified on the blockchain to ensure authenticity and brine integrity."
+  },
+  {
+    "id": 30,
+    "title": "Universal Keyboard",
+    "content": "A keyboard capable of typing in every language, including extinct alien dialects."
+  }
+]
