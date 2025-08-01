@@ -58,15 +58,24 @@ class ChatUI:
         # Call LM Studio endpoint
         ai_reply = self.query_ai(prompt)
         self.display("Hermes 3", ai_reply)
-        # Save turn
-        current_convo["turns"].append({"role": "user", "text": user_msg})
-        current_convo["turns"].append({"role": "assistant", "text": ai_reply})
-        # Optionally, classify feedback
+        # Classify feedback and select highest probability label
+        sat_dsat = None
         try:
             feedback_result = feedback.classify(user_msg)
             print("Feedback classification:", feedback_result)
+            sat_dsat = max(feedback_result, key=feedback_result.get)  # 'SAT', 'DSAT', or 'Neutral'
         except Exception as e:
             print("Feedback error:", e)
+        # Save turn with sat_dsat metric
+        current_convo["turns"].append({
+            "role": "user",
+            "text": user_msg,
+            "sat_dsat": sat_dsat
+        })
+        current_convo["turns"].append({
+            "role": "assistant",
+            "text": ai_reply
+        })
 
     def query_ai(self, prompt):
         headers = {"Content-Type": "application/json"}

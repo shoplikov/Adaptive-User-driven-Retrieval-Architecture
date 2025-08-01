@@ -57,7 +57,8 @@
   {
     "id": 12,
     "title": "Cabbage Wars",
-    "content": "A forgotten conflict where medieval farmers fought over the rightful ownership of giant cabbages."
+    "content": "A forgotten conflict where medieval farmers fought over the rightful ownership of giant cabbages.",
+    "relevance": 0.9
   },
   {
     "id": 13,
