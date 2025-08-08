@@ -30,9 +30,10 @@ class ChatUI:
     def __init__(self, root):
         self.root = root
         self.root.title("AURA Chat (Hermes 3)")
-        self.chat = scrolledtext.ScrolledText(root, state='disabled', width=80, height=25, wrap='word')
+        self.root.option_add('*Font', 'TkDefaultFont')  # Ensure default font supports Unicode
+        self.chat = scrolledtext.ScrolledText(root, state='disabled', width=80, height=25, wrap='word', font=('TkDefaultFont', 10))
         self.chat.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
-        self.entry = tk.Entry(root, width=70)
+        self.entry = tk.Entry(root, width=70, font=('TkDefaultFont', 10))
         self.entry.grid(row=1, column=0, padx=10, pady=5, sticky='w')
         self.entry.bind('<Return>', self.send)
         self.send_btn = tk.Button(root, text="Send", command=self.send)
@@ -41,7 +42,14 @@ class ChatUI:
 
     def display(self, who, text):
         self.chat.config(state='normal')
-        self.chat.insert(END, f"{who}: {text}\n")
+        try:
+            # Ensure text is properly decoded as UTF-8
+            if isinstance(text, bytes):
+                text = text.decode('utf-8')
+            self.chat.insert(END, f"{who}: {text}\n")
+        except Exception as e:
+            print(f"Display error: {e}")
+            self.chat.insert(END, f"{who}: [Error displaying message]\n")
         self.chat.see(END)
         self.chat.config(state='disabled')
 
@@ -107,5 +115,10 @@ class ChatUI:
 
 if __name__ == "__main__":
     root = tk.Tk()
+    # Set default encoding for Tkinter
+    import sys
+    if sys.platform.startswith('win'):
+        root.option_add('*Dialog.msg.font', 'TkDefaultFont')
+        root.option_add('*Dialog.msg.wrapLength', '6i')
     app = ChatUI(root)
     root.mainloop()
