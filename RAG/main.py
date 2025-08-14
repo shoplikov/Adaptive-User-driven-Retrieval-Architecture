@@ -2,6 +2,7 @@ import os
 import json
 import faiss
 import sys
+
 sys.modules["torchvision"] = None
 sys.modules["timm"] = None
 
@@ -13,14 +14,16 @@ from RAG.reranker import Reranker
 
 
 class RAG:
-    def __init__(self, 
-                 docs_path="RAG/documents.json", 
-                 embedding_model="all-MiniLM-L6-v2", 
-                 index_path="rag.index", 
-                 meta_path="rag_meta.json", 
-                 batch_size=32,
-                 force_rebuild=False):
-        
+    def __init__(
+        self,
+        docs_path="RAG/documents.json",
+        embedding_model="all-MiniLM-L6-v2",
+        index_path="rag.index",
+        meta_path="rag_meta.json",
+        batch_size=32,
+        force_rebuild=False,
+    ):
+
         # Auto-detect GPU for embeddings
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"[RAG] Using device for embeddings: {device.upper()}")
@@ -32,7 +35,11 @@ class RAG:
         self.batch_size = batch_size
 
         # Load or build index
-        if not force_rebuild and os.path.exists(index_path) and os.path.exists(meta_path):
+        if (
+            not force_rebuild
+            and os.path.exists(index_path)
+            and os.path.exists(meta_path)
+        ):
             print("[RAG] Loading existing FAISS index & metadata...")
             self.index = faiss.read_index(index_path)
             with open(meta_path, "r", encoding="utf-8") as f:
@@ -60,7 +67,9 @@ class RAG:
             batch.append(doc["content"])
 
             if len(batch) >= self.batch_size:
-                batch_embeddings = self.embedding_model.encode(batch, convert_to_numpy=True, show_progress_bar=True)
+                batch_embeddings = self.embedding_model.encode(
+                    batch, convert_to_numpy=True, show_progress_bar=True
+                )
                 if index is None:
                     dim = batch_embeddings.shape[1]
                     index = faiss.IndexFlatL2(dim)
@@ -69,7 +78,9 @@ class RAG:
 
         # Handle last batch
         if batch:
-            batch_embeddings = self.embedding_model.encode(batch, convert_to_numpy=True, show_progress_bar=True)
+            batch_embeddings = self.embedding_model.encode(
+                batch, convert_to_numpy=True, show_progress_bar=True
+            )
             if index is None:
                 dim = batch_embeddings.shape[1]
                 index = faiss.IndexFlatL2(dim)

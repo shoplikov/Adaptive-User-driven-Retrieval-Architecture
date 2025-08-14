@@ -3,10 +3,11 @@ from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import joblib
 
+
 class PraisePipeline:
     def __init__(self, strategy_file, classifier_file=None):
         # Load strategies
-        with open(strategy_file, "r") as f:
+        with open(strategy_file, "r", encoding="utf-8") as f:
             self.strategies = json.load(f)
 
         # Load embedding model
@@ -25,12 +26,16 @@ class PraisePipeline:
             for phrase in phrases:
                 texts.append(phrase)
                 labels.append(label)
-        embeddings = self.model.encode(texts, convert_to_tensor=True, normalize_embeddings=True)
+        embeddings = self.model.encode(
+            texts, convert_to_tensor=True, normalize_embeddings=True
+        )
         return embeddings, labels
 
     def compute_similarity_features(self, text):
         # Embed user message
-        user_emb = self.model.encode(text, convert_to_tensor=True, normalize_embeddings=True)
+        user_emb = self.model.encode(
+            text, convert_to_tensor=True, normalize_embeddings=True
+        )
         # Compute cosine similarity
         similarities = util.cos_sim(user_emb, self.strategy_embeddings)[0].cpu().numpy()
         return similarities
@@ -42,6 +47,7 @@ class PraisePipeline:
         features = self.compute_similarity_features(text).reshape(1, -1)
         probs = self.classifier.predict_proba(features)[0]
         return dict(zip(self.classifier.classes_, probs))
+
 
 # Example usage
 if __name__ == "__main__":

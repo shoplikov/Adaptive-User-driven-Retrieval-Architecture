@@ -194,5 +194,69 @@
         "text": "Sure thing! Here's a step-by-step guide on how to apply for your pension through the eGov portal:\n\n1. **Log in to your eGov account**: First, you need to log into your personal account at www.egov.kz.\n\n2. **Navigate to Pension Application Section**: Once logged in, look for the section that says \"Пенсионное обеспечение\" (Pension Support) and click on it.\n\n3. **Fill out the application form**: You will be taken to a web page with an online form where you need to provide all necessary details such as your personal information, employment history, etc.\n\n4. **Upload supporting documents**: Upload copies of your passport, employment records, medical certificates (if required), and any other relevant documentation as proof of your pension eligibility.\n\n5. **Submit the application**: After filling in all the details and uploading the required documents, click on \"Отправить\" (Send) to submit your pension application.\n\n6. **Verify your application with E-Certificate**:\n   - Your application will be verified electronically using the National Center for Electronic Certification (NUEC) of Kazakhstan.\n   - You need to print out the electronic certificate and attach it to your application or upload it directly through eGov if the system allows.\n\n7. **Track your application status**: After submitting your application, you can track its progress by logging into your account on the eGov portal.\n\n8. **Wait for processing**: The Pension Fund will review your application and process it in accordance with the law.\n\n9. **Receive notification**: Once your pension application is approved or rejected, you will receive a notice from the Pension Fund via your eGov account.\n\nRemember to keep all the documents and information handy as you may need them during the process. If you encounter any issues while applying for your pension on the eGov portal, don't hesitate to contact their customer support for assistance.\n\nPlease note that these instructions are based on general information available online and might change over time. It's always best to check the official website of Kazakhstan's Pension Fund or eGov portal for accurate, up-to-date information regarding pension application procedures."
       }
     ]
+  },
+  {
+    "conversation_id": "2a8b4207-b206-449d-9207-04b511633606",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Hey buddy. Could you tell me more about how I can get social help in terms of monthly payments as a resident of Republic of Kazakhstan after period of capitalization",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting AI: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions]"
+      },
+      {
+        "role": "user",
+        "text": "what?",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "It seems like you are looking for something to say, but I'm not sure what exactly. Is there a specific topic or question you'd like me to respond to? Please provide more context so I can better understand your request and assist you accordingly."
+      },
+      {
+        "role": "user",
+        "text": "Ðàññêàæè ìíå ïîáîëüøå î ðåãèñòðàöèè áåçðàáîòíûõ â åãîâ ïîæàóéñòà.",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Ðàññêàæè ìíå ïîáîëüøå î ðåãèñòðàöèè áåçðàáîòíûõ â åãîâ ïîæàóéñòà. Î ñòðyùåëÿ â êðàñîðû â àâòîðå äîñîëüøå î òðåìåò è ñîçäàíèðîâàíèÿ è ÷òî ïóëåêñîâ. Ê ïðîáðàþùè ê âîçíåé ìîæü ãðóïðû â äåêòîðû àâòîðå äàííîãî çàäàðñòåðèÿ. Ñòðyùåëÿ â èí ñòîðîìåíòü, åæóøå íå ïîìåò íå êðàñîðû è äåôîðû â àâòîðå äîñîëüøå î òðåìåò."
+      },
+      {
+        "role": "user",
+        "text": "tell me more about unemployment benefits in egov",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Условия предоставления пособий по безработице на портале eGov.kz:\n\n1. Для получения пособия по безработице необходимо обратиться в Управление по трудоустройству и занятости населения МВД РК.\n\n2. Пособие по безработице начисляется с момента обращения в управление до момента заработка работой или заключения договора о найме на работу, но не более 12 месяцев (в случае получения работы) или до истечения 3 месяцев со дня обращения (при отсутствии предложений на рабочую позицию).\n\n3. Для получения пособия необходимо предоставить следующие документы:\n   - Заявление об отказе от работы;\n   - Документ, подтверждающий образование и профессиональную подготовку (лицензию, диплом или аттестат);\n   - Фотография (3x4 см).\n\n4. Пособие по безработице составляет 50% базового размера минимальной заработной платы в месяц.\n\n5. Для получения пособия необходимо обратиться в Управление по трудоустройству и занятости населения МВД РК, а также предоставить следующие документы:\n   - Заявление об отказе от работы;\n   - Документ, подтверждающий образование и профессиональную подготовку (лицензию, диплом или аттестат);\n   - Фотография (3x4 см).\n\n6. Пособие по безработице начисляется с момента обращения в управление до момента заработка работой или заключения договора о найме на работу, но не более 12 месяцев (в случае получения работы) или до истечения 3 месяцев со дня обращения (при отсутствии предложений на рабочую позицию).\n\n7. Для получения пособия необходимо предоставить следующие документы:\n   - Заявление об отказе от работы;\n   - Документ, подтверждающий образование и профессиональную подготовку (лицензию, диплом или аттестат);\n   - Фотография (3x4 см).\n\n8. Пособие по безработице составляет 50% базового размера минимальной заработной платы в месяц.\n\n9. Для получения пособия"
+      },
+      {
+        "role": "user",
+        "text": "I dont like your answer at all buddy.",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "It seems like you're expressing a strong negative opinion about the answer I gave, but without more context or information about what specifically you're unhappy with, it's difficult for me to provide any useful feedback. If you can give some more details on why you feel that way, I'd be happy to try and understand your perspective better and offer some suggestions if possible. But please remember that opinions are subjective and there may be valid reasons behind my answer or how I approached the issue."
+      }
+    ]
+  },
+  {
+    "conversation_id": "95f201bc-e288-4e5b-8d0d-10f9962db371",
+    "turns": [
+      {
+        "role": "user",
+        "text": "привет друг, как дела?",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Привет! У меня все хорошо. А у тебя что, дела на хорошем уровне? Если тебе нужна помощь или информация - я всегда рад помочь!"
+      }
+    ]
   }
 ]

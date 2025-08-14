@@ -1,7 +1,10 @@
-faiss_cpu==1.11.0.post1
-joblib==1.4.2
-joblib==1.5.1
-numpy==2.3.2
-Requests==2.32.4
-scikit_learn==1.7.1
-sentence_transformers==5.0.0
+fastapi>=0.85.0
+uvicorn>=0.20.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.5
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+numpy>=1.24.0
+scikit-learn>=1.2.0
+pandas>=2.0.0
+python-multipart>=0.0.5

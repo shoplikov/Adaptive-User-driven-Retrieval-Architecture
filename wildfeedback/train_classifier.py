@@ -7,7 +7,7 @@ import joblib
 from praise import PraisePipeline
 
 # Load labeled data
-with open("data/satisfaction_labels.json", "r") as f:
+with open("data/satisfaction_labels.json", "r", encoding="utf-8") as f:
     labeled_data = json.load(f)
 print(f"Loaded {len(labeled_data)} labeled examples.")
 pipeline = PraisePipeline("data/strategies.json")
@@ -23,13 +23,12 @@ for row in labeled_data:
 X = np.array(X)
 y = np.array(y)
 
-# Train classifier
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 clf = LogisticRegression(max_iter=500, multi_class="ovr")
 clf.fit(X_train, y_train)
 
-# Evaluate
 print(classification_report(y_test, clf.predict(X_test)))
 
-# Save classifier
 joblib.dump(clf, "praise_classifier.pkl")
