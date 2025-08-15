@@ -21,7 +21,6 @@ from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.reflection import Inspector
-
 # Import models from the main database module
 import sys
 import os
@@ -47,55 +46,40 @@ class DatabaseManager:
     def __init__(self):
         """Initialize the database manager with connection and inspection."""
         # Create the database URL
-        DATABASE_URL = f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
-        self.engine = create_engine(DATABASE_URL)
+        self.engine = engine
         self.inspector = inspect(self.engine)
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
     def get_table_names(self) -> List[str]:
-        """Get all table names in the database."""
-        return self.inspector.get_table_names()
+        """Get all table names in the database (fresh inspector each call)."""
+        return inspect(self.engine).get_table_names()
 
     def get_model_table_names(self) -> List[str]:
         """Get table names from SQLAlchemy models."""
         return [table.name for table in Base.metadata.tables.values()]
 
     def create_tables(self, tables: Optional[List[str]] = None):
-        """
-        Create tables for the given models.
-        If no tables specified, creates all model tables.
-        """
+        """Create tables for the given models."""
         logger.info("Creating tables...")
-
-        if not tables:
-            # Create all tables from models
-            try:
-                Base.metadata.create_all(bind=self.engine)
-                logger.info("Successfully created all tables from models")
-            except SQLAlchemyError as e:
-                logger.error(f"Error creating tables: {e}")
-                raise
-        else:
-            # Create specific tables
-            for table_name in tables:
-                try:
-                    table = Base.metadata.tables.get(table_name)
-                    if not table:
-                        logger.warning(f"Table {table_name} not found in models")
-                        continue
-
-                    with self.engine.connect() as connection:
-                        connection.execute(text(f"CREATE TABLE IF NOT EXISTS {table_name}"))
-                    logger.info(f"Created table: {table_name}")
-                except SQLAlchemyError as e:
-                    logger.error(f"Error creating table {table_name}: {e}")
-                    raise
+        try:
+            with self.engine.begin() as conn:  # commits on success
+                if not tables:
+                    Base.metadata.create_all(bind=conn)
+                    logger.info("Successfully created all tables from models")
+                else:
+                    for table_name in tables:
+                        tbl = Base.metadata.tables.get(table_name)
+                        if tbl is None:
+                            logger.warning(f"Table {table_name} not found in models")
+                            continue
+                        tbl.create(bind=conn, checkfirst=True)
+                        logger.info(f"Created table: {table_name}")
+        except SQLAlchemyError as e:
+            logger.error(f"Error creating tables: {e}")
+            raise
 
     def drop_tables(self, tables: Optional[List[str]] = None, force: bool = False):
-        """
-        Drop tables from the database.
-        If no tables specified, drops all model tables.
-        """
+        """Drop tables from the database."""
         if not force:
             confirm = input("WARNING: This will permanently delete tables. Are you sure? (y/N): ").lower()
             if confirm != 'y':
@@ -103,32 +87,23 @@ class DatabaseManager:
                 return
 
         logger.info("Dropping tables...")
-
-        if not tables:
-            # Drop all model tables
-            try:
-                # Get tables in reverse order to handle foreign keys
-                model_tables = self.get_model_table_names()
-                for table_name in reversed(model_tables):
-                    try:
-                        with self.engine.connect() as connection:
-                            connection.execute(text(f"DROP TABLE IF EXISTS {table_name} CASCADE"))
+        try:
+            with self.engine.begin() as conn:  # commits on success
+                if not tables:
+                    # Drop using metadata (correct FK order)
+                    Base.metadata.drop_all(bind=conn)
+                else:
+                    # Drop specific tables (reverse for FK safety)
+                    for table_name in reversed(tables):
+                        tbl = Base.metadata.tables.get(table_name)
+                        if tbl is None:
+                            logger.warning(f"Table {table_name} not found in models")
+                            continue
+                        tbl.drop(bind=conn, checkfirst=True)
                         logger.info(f"Dropped table: {table_name}")
-                    except SQLAlchemyError as e:
-                        logger.error(f"Error dropping table {table_name}: {e}")
-                        raise
-            except SQLAlchemyError as e:
-                logger.error(f"Error dropping tables: {e}")
-                raise
-        else:
-            # Drop specific tables
-            for table_name in tables:
-                try:
-                    self.engine.execute(text(f"DROP TABLE IF EXISTS {table_name} CASCADE"))
-                    logger.info(f"Dropped table: {table_name}")
-                except SQLAlchemyError as e:
-                    logger.error(f"Error dropping table {table_name}: {e}")
-                    raise
+        except SQLAlchemyError as e:
+            logger.error(f"Error dropping tables: {e}")
+            raise
 
     def reset_tables(self, tables: Optional[List[str]] = None):
         """
@@ -146,27 +121,19 @@ class DatabaseManager:
             self.create_tables(tables)
 
     def show_status(self):
-        """Show current database table status."""
         logger.info("Database table status:")
-
-        db_tables = set(self.get_table_names())
+        inspector = inspect(self.engine)  # fresh
+        db_tables = set(inspector.get_table_names())
         model_tables = set(self.get_model_table_names())
-
-        # Tables in database but not in models
         extra_tables = db_tables - model_tables
         if extra_tables:
             logger.warning(f"Extra tables in database (not in models): {sorted(extra_tables)}")
-
-        # Tables in models but not in database
         missing_tables = model_tables - db_tables
         if missing_tables:
             logger.warning(f"Tables missing from database: {sorted(missing_tables)}")
-
-        # Tables that exist in both
         existing_tables = db_tables & model_tables
         if existing_tables:
             logger.info(f"Existing tables: {sorted(existing_tables)}")
-
         if not extra_tables and not missing_tables:
             logger.info("Database is up to date with models")
 

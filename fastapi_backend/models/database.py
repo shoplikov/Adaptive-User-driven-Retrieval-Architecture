@@ -6,7 +6,6 @@ import os
 from sqlalchemy import create_engine, Column, String, Integer, DateTime, Boolean, Float, JSON, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from uuid import uuid4
 import sys
@@ -24,7 +23,13 @@ Base = declarative_base()
 
 # Database connection
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    expire_on_commit=False,
+    bind=engine,
+)
+
 
 def get_db():
     """
@@ -42,14 +47,18 @@ class Conversation(Base):
     """
     __tablename__ = "conversations"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    session_id = Column(String(36), unique=True, default=lambda: str(uuid4()))
+    user_id = Column(String(255), nullable=True, index=True)
+    model = Column(String(255), nullable=False)
+    status = Column(String(20), default="active")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    model = Column(String(255), nullable=False)
     total_tokens = Column(Integer, default=0)
+    is_active = Column(Boolean, default=True)
     extra_data = Column(JSON, nullable=True)
     # Relationship to turns
-    turns = relationship("ConversationTurn", back_populates="conversation")
+    turns = relationship("ConversationTurn", back_populates="conversation", order_by="desc(ConversationTurn.created_at)")
 
 class ConversationTurn(Base):
     """
@@ -57,10 +66,12 @@ class ConversationTurn(Base):
     """
     __tablename__ = "conversation_turns"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    conversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.id"), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False, index=True)
+    message_id = Column(String(36), unique=True, default=lambda: str(uuid4()))
     role = Column(String(20), nullable=False, server_default="user")
     content = Column(String, nullable=False)
+    message_hash = Column(String(64), index=True, nullable=True)
     tokens = Column(Integer, nullable=True)
     satisfaction_score = Column(String(20), nullable=True)  # 'SAT', 'DSAT', 'Neutral'
     satisfaction_confidence = Column(Float, nullable=True)

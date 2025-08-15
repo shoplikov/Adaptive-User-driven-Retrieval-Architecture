@@ -5,17 +5,19 @@ FastAPI backend for AURA chatbot with OpenAI-compatible API endpoint.
 
 import os
 import logging
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, Request, HTTPException, status, Query, Path, Body, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi import Response, Header
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 from pydantic import ValidationError
 from typing import List, Optional
 
 # Import custom modules
-from models.schemas import ChatCompletionRequest, ChatCompletionResponse
+from models.schemas import ChatCompletionRequest, ChatCompletionResponse, Message, Conversation as ConversationSchema, ConversationTurn as ConversationTurnSchema, ConversationCreate, ConversationUpdate
 from services.chat_completion import ChatCompletionService
+from services.conversation_service import ConversationService
 from config import settings
 from middleware.logging_middleware import LogRequestMiddleware
 from middleware.conversation_middleware import ConversationMiddleware
@@ -43,20 +45,32 @@ app.add_middleware(
 app.add_middleware(LogRequestMiddleware)
 app.add_middleware(ConversationMiddleware)
 
-# Initialize chat completion service
+# Initialize services
 chat_service = ChatCompletionService()
+conversation_service = ConversationService()
+
 
 @app.post("/v1/chat/completions", response_model=ChatCompletionResponse)
-async def chat_completions(request: Request, payload: ChatCompletionRequest):
-    """
-    OpenAI-compatible chat completion endpoint.
-    Accepts POST requests with chat completion format including messages array,
-    model parameter, temperature, max_tokens, and stream options.
-    """
+async def chat_completions(
+    request: Request,
+    payload: ChatCompletionRequest,
+    response: Response,
+    x_session_id: Optional[str] = Header(
+        default=None,
+        alias="X-Conversation-Session-ID",
+        description="Conversation session/thread ID. If omitted, the server falls back to payload.session_id, then payload.user."
+    ),
+):
     try:
-        # Process the chat completion request
-        response = chat_service.process_request(payload)
-        return response
+        session_id = x_session_id or getattr(payload, "session_id", None) or payload.user
+        conversation = conversation_service.get_or_create_conversation(
+            session_id=session_id,
+            model=payload.model
+        )
+        response.headers["X-Conversation-Id"] = str(conversation.id)
+        response.headers["X-Conversation-Session-ID"] = conversation.session_id
+        reply = chat_service.process_request(payload, conversation_id=conversation.id)
+        return reply
     except Exception as e:
         logging.error(f"Error processing chat completion: {e}")
         raise HTTPException(
@@ -77,6 +91,106 @@ async def list_models():
     List available models.
     """
     return [settings.DEFAULT_MODEL]
+
+@app.post("/v1/conversations", response_model=ConversationSchema)
+async def create_conversation(request: Request, model: str = Query(..., description="Model to use for the conversation")):
+    """
+    Create a new conversation.
+    """
+    try:
+        conversation = conversation_service.create_conversation(model=model)
+        return conversation
+    except Exception as e:
+        logging.error(f"Error creating conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@app.get("/v1/conversations/{conversation_id}", response_model=ConversationSchema)
+async def get_conversation(conversation_id: int = Path(..., description="ID of the conversation to retrieve", gt=0)):
+    """
+    Get conversation details by ID.
+    """
+    try:
+        conversation = conversation_service.get_conversation_by_id(conversation_id)
+        if not conversation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Conversation not found"
+            )
+        return conversation
+    except Exception as e:
+        logging.error(f"Error retrieving conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@app.get("/v1/conversations/{conversation_id}/messages", response_model=List[ConversationTurnSchema])
+async def get_conversation_history(conversation_id: int = Path(..., description="ID of the conversation to get history for", gt=0)):
+    """
+    Get message history for a conversation.
+    """
+    try:
+        history = conversation_service.get_conversation_history(conversation_id)
+        return history
+    except Exception as e:
+        logging.error(f"Error retrieving conversation history: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@app.post("/v1/conversations/{conversation_id}/messages", response_model=ConversationTurnSchema)
+async def add_message_to_conversation(
+    conversation_id: int = Path(..., description="ID of the conversation to add message to", gt=0),
+    message: Message = Body(..., description="Message to add to the conversation")
+):
+    """
+    Add a message to an existing conversation.
+    """
+    try:
+        turn = conversation_service.add_message_to_conversation(conversation_id, message)
+        return turn
+    except Exception as e:
+        logging.error(f"Error adding message to conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@app.put("/v1/conversations/{conversation_id}", response_model=ConversationSchema)
+async def update_conversation(
+    conversation_id: int = Path(..., description="ID of the conversation to update", gt=0),
+    update_data: ConversationUpdate = Body(..., description="Data to update the conversation with")
+):
+    """
+    Update a conversation.
+    """
+    try:
+        conversation = conversation_service.update_conversation(conversation_id, update_data)
+        return conversation
+    except Exception as e:
+        logging.error(f"Error updating conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@app.delete("/v1/conversations/{conversation_id}", response_model=bool)
+async def delete_conversation(conversation_id: int = Path(..., description="ID of the conversation to delete", gt=0)):
+    """
+    Delete a conversation.
+    """
+    try:
+        return conversation_service.delete_conversation(conversation_id)
+    except Exception as e:
+        logging.error(f"Error deleting conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 
 # Custom error handlers
 @app.exception_handler(RequestValidationError)

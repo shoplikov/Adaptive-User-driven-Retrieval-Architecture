@@ -11,14 +11,14 @@ class Settings(BaseSettings):
     """
 
     # Database configuration
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "master")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "aura_chatbot")
-    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
-    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", "5432"))
+    POSTGRES_USER: str = os.getenv("DB_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("DB_PASSWORD", "master")
+    POSTGRES_DB: str = os.getenv("DB_NAME", "aura_chatbot")
+    POSTGRES_HOST: str = os.getenv("DB_HOST", "localhost")
+    POSTGRES_PORT: int = int(os.getenv("DB_PORT", "5432"))
 
     # LMStudio configuration
-    LMSTUDIO_ENDPOINT: str = os.getenv("LMSTUDIO_ENDPOINT", "http://localhost:1234/v1/chat/completions")
+    LMSTUDIO_ENDPOINT: str = os.getenv("LLM_API_BASE", "http://localhost:1234/v1/chat/completions")
     DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "hermes-3-llama-3.2-3b")
     DEFAULT_TEMPERATURE: float = float(os.getenv("DEFAULT_TEMPERATURE", "0.7"))
     DEFAULT_MAX_TOKENS: int = int(os.getenv("DEFAULT_MAX_TOKENS", "512"))
@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
     API_PORT: int = int(os.getenv("API_PORT", "8000"))
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    APP_ENV: str = os.getenv("APP_ENV", "development")
 
     class Config:
         env_file = ".env"

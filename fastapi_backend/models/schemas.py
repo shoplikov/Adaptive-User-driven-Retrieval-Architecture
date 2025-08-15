@@ -5,7 +5,6 @@ Pydantic models for OpenAI-compatible request/response schemas.
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-from uuid import UUID
 
 class Message(BaseModel):
     """
@@ -54,22 +53,43 @@ class ConversationTurn(BaseModel):
     """
     Database model for conversation turns.
     """
-    id: UUID
-    conversation_id: UUID
+    id: int
+    conversation_id: int
     role: str
     content: str
+    message_hash: Optional[str] = None
     tokens: Optional[int] = None
     satisfaction_score: Optional[str] = None
     satisfaction_confidence: Optional[float] = None
     created_at: datetime
     extra_data: Optional[Dict[str, Any]] = None
+    model_config = {"from_attributes": True}
+
 class Conversation(BaseModel):
     """
     Database model for conversations.
     """
-    id: UUID
+    id: int
+    session_id: str
     created_at: datetime
     updated_at: datetime
     model: str
     total_tokens: Optional[int] = None
+    extra_data: Optional[Dict[str, Any]] = None
+    model_config = {"from_attributes": True}
+
+class ConversationCreate(BaseModel):
+    """
+    Schema for creating a new conversation.
+    """
+    model: str
+    user_id: Optional[str] = None
+
+class ConversationUpdate(BaseModel):
+    """
+    Schema for updating a conversation.
+    """
+    model: Optional[str] = None
+    status: Optional[str] = None
+    is_active: Optional[bool] = None
     extra_data: Optional[Dict[str, Any]] = None
