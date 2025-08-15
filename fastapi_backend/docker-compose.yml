@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: aura_db
+    environment:
+      POSTGRES_DB: aura
+      POSTGRES_USER: aura_user
+      POSTGRES_PASSWORD: aura_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aura_user -d aura"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: aura_api
+    environment:
+      DATABASE_URL: postgres://aura_user:aura_password@db/aura
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      MODEL_NAME: ${MODEL_NAME:-gpt-3.5-turbo}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: uvicorn fastapi_backend.main:app --host 0.0.0.0 --port 8000 --workers 4
+
+volumes:
+  postgres_data:
