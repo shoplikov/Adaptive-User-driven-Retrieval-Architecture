@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Analytics Dashboard</h1>
+        </header>
+
+        <main class="dashboard-main">
+            <section class="metrics-section">
+                <div class="metric-card" id="total-conversations">
+                    <h2>Total Conversations</h2>
+                    <div class="metric-value" id="total-conversations-value">Loading...</div>
+                </div>
+
+                <div class="metric-card" id="satisfaction-stats">
+                    <h2>Satisfaction Statistics</h2>
+                    <div class="metric-values" id="satisfaction-values">
+                        <div>Loading...</div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="token-usage">
+                    <h2>Token Usage</h2>
+                    <div class="metric-values" id="token-usage-values">
+                        <div>Input Tokens: Loading...</div>
+                        <div>Output Tokens: Loading...</div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="status-breakdown">
+                    <h2>Status Breakdown</h2>
+                    <div class="metric-values" id="status-values">
+                        <div>Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="charts-section">
+                <div class="chart-card" id="satisfaction-chart">
+                    <h2>Satisfaction Distribution</h2>
+                    <canvas id="satisfaction-canvas"></canvas>
+                </div>
+
+                <div class="chart-card" id="status-chart">
+                    <h2>Status Distribution</h2>
+                    <canvas id="status-canvas"></canvas>
+                </div>
+            </section>
+        </main>
+
+        <footer class="dashboard-footer">
+            <p>© 2023 Analytics Service</p>
+        </footer>
+    </div>
+
+    <script src="assets/scripts.js"></script>
+</body>
+</html>
