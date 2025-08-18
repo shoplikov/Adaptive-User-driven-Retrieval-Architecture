@@ -6,21 +6,28 @@ from config.settings import settings
 
 # Debug logging
 import logging
+
 logger = logging.getLogger(__name__)
 logger.info(f"Settings module: {settings}")
 logger.info(f"Settings attributes: {dir(settings)}")
 
 router = APIRouter()
 
+
 def get_db_service() -> DatabaseService:
     """Dependency to get database service"""
     try:
         return DatabaseService(settings.ANALYTICS_DATABASE_URL)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database connection error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Database connection error: {str(e)}"
+        )
+
 
 @router.get("/metrics/total_conversations", response_model=Dict[str, int])
-def get_total_conversations(db: DatabaseService = Depends(get_db_service)) -> Dict[str, int]:
+def get_total_conversations(
+    db: DatabaseService = Depends(get_db_service),
+) -> Dict[str, int]:
     """
     Get total number of conversations
 
@@ -31,10 +38,15 @@ def get_total_conversations(db: DatabaseService = Depends(get_db_service)) -> Di
         total = db.get_total_conversations()
         return {"total": total}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving total conversations: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving total conversations: {str(e)}"
+        )
+
 
 @router.get("/metrics/satisfaction", response_model=Dict[str, int])
-def get_satisfaction_stats(db: DatabaseService = Depends(get_db_service)) -> Dict[str, int]:
+def get_satisfaction_stats(
+    db: DatabaseService = Depends(get_db_service),
+) -> Dict[str, int]:
     """
     Get satisfaction statistics
 
@@ -45,7 +57,10 @@ def get_satisfaction_stats(db: DatabaseService = Depends(get_db_service)) -> Dic
         stats = db.get_satisfaction_stats()
         return stats
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving satisfaction stats: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving satisfaction stats: {str(e)}"
+        )
+
 
 @router.get("/metrics/token_usage", response_model=Dict[str, int])
 def get_token_usage(db: DatabaseService = Depends(get_db_service)) -> Dict[str, int]:
@@ -59,10 +74,15 @@ def get_token_usage(db: DatabaseService = Depends(get_db_service)) -> Dict[str, 
         usage = db.get_token_usage()
         return usage
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving token usage: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving token usage: {str(e)}"
+        )
+
 
 @router.get("/metrics/status_breakdown", response_model=Dict[str, int])
-def get_status_breakdown(db: DatabaseService = Depends(get_db_service)) -> Dict[str, int]:
+def get_status_breakdown(
+    db: DatabaseService = Depends(get_db_service),
+) -> Dict[str, int]:
     """
     Get conversation status breakdown
 
@@ -73,4 +93,6 @@ def get_status_breakdown(db: DatabaseService = Depends(get_db_service)) -> Dict[
         breakdown = db.get_status_breakdown()
         return breakdown
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving status breakdown: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving status breakdown: {str(e)}"
+        )

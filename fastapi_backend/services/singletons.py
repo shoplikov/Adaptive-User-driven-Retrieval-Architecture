@@ -8,6 +8,7 @@ _rag = None
 _feedback = None
 _lock = threading.Lock()
 
+
 def get_rag():
     global _rag
     if _rag is None:
@@ -16,6 +17,7 @@ def get_rag():
                 _rag = RAG(docs_path=settings.RAG_DOCS_PATH)
     return _rag
 
+
 def get_feedback():
     global _feedback
     if _feedback is None:
@@ -23,6 +25,6 @@ def get_feedback():
             if _feedback is None:
                 _feedback = PraisePipeline(
                     strategy_file=settings.FEEDBACK_STRATEGY_PATH,
-                    classifier_file=settings.FEEDBACK_CLASSIFIER_PATH
+                    classifier_file=settings.FEEDBACK_CLASSIFIER_PATH,
                 )
     return _feedback

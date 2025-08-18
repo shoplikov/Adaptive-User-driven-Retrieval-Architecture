@@ -21,22 +21,24 @@ from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.reflection import Inspector
+
 # Import models from the main database module
 import sys
 import os
 
 # Add the root directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from fastapi_backend.models.database import Base, engine
 from fastapi_backend.config import settings
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
+
 
 class DatabaseManager:
     """
@@ -48,7 +50,9 @@ class DatabaseManager:
         # Create the database URL
         self.engine = engine
         self.inspector = inspect(self.engine)
-        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        self.SessionLocal = sessionmaker(
+            autocommit=False, autoflush=False, bind=self.engine
+        )
 
     def get_table_names(self) -> List[str]:
         """Get all table names in the database (fresh inspector each call)."""
@@ -81,8 +85,10 @@ class DatabaseManager:
     def drop_tables(self, tables: Optional[List[str]] = None, force: bool = False):
         """Drop tables from the database."""
         if not force:
-            confirm = input("WARNING: This will permanently delete tables. Are you sure? (y/N): ").lower()
-            if confirm != 'y':
+            confirm = input(
+                "WARNING: This will permanently delete tables. Are you sure? (y/N): "
+            ).lower()
+            if confirm != "y":
                 logger.info("Operation cancelled by user")
                 return
 
@@ -127,7 +133,9 @@ class DatabaseManager:
         model_tables = set(self.get_model_table_names())
         extra_tables = db_tables - model_tables
         if extra_tables:
-            logger.warning(f"Extra tables in database (not in models): {sorted(extra_tables)}")
+            logger.warning(
+                f"Extra tables in database (not in models): {sorted(extra_tables)}"
+            )
         missing_tables = model_tables - db_tables
         if missing_tables:
             logger.warning(f"Tables missing from database: {sorted(missing_tables)}")
@@ -148,39 +156,37 @@ class DatabaseManager:
             logger.error(f"Database connection failed: {e}")
             return False
 
+
 def main():
     """Main entry point for the database manager."""
     parser = argparse.ArgumentParser(description="Intelligent Database Manager")
     parser.add_argument(
-        'command',
-        choices=['create', 'drop', 'reset', 'status', 'validate'],
-        help="Command to execute"
+        "command",
+        choices=["create", "drop", "reset", "status", "validate"],
+        help="Command to execute",
     )
     parser.add_argument(
-        '--tables',
-        nargs='*',
-        help="Specific tables to operate on (optional)"
+        "--tables", nargs="*", help="Specific tables to operate on (optional)"
     )
     parser.add_argument(
-        '--force',
-        action='store_true',
-        help="Force operation without confirmation"
+        "--force", action="store_true", help="Force operation without confirmation"
     )
 
     args = parser.parse_args()
 
     db_manager = DatabaseManager()
 
-    if args.command == 'create':
+    if args.command == "create":
         db_manager.create_tables(args.tables)
-    elif args.command == 'drop':
+    elif args.command == "drop":
         db_manager.drop_tables(args.tables, args.force)
-    elif args.command == 'reset':
+    elif args.command == "reset":
         db_manager.reset_tables(args.tables)
-    elif args.command == 'status':
+    elif args.command == "status":
         db_manager.show_status()
-    elif args.command == 'validate':
+    elif args.command == "validate":
         db_manager.validate_connection()
+
 
 if __name__ == "__main__":
     main()

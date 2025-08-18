@@ -23,7 +23,6 @@ class RAG:
         batch_size=32,
         force_rebuild=False,
     ):
-
         # Auto-detect GPU for embeddings
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"[RAG] Using device for embeddings: {device.upper()}")

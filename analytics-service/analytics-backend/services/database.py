@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DatabaseService:
     """Service class for handling database operations for analytics"""
 
@@ -18,7 +19,9 @@ class DatabaseService:
         self.Session = sessionmaker(bind=self.engine)
         logger.info("Database service initialized successfully")
 
-    def execute_query(self, query: str, params: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+    def execute_query(
+        self, query: str, params: Dict[str, Any] = None
+    ) -> List[Dict[str, Any]]:
         """
         Execute a raw SQL query and return results as a list of dictionaries
 
@@ -36,23 +39,25 @@ class DatabaseService:
         try:
             result = session.execute(text(query), params or {})
             logger.info(f"Query executed successfully: {query}")
-            
+
             # Convert SQLAlchemy result rows to dictionaries properly
             rows = []
             for row in result:
                 try:
                     # Try the _asdict() method first (works with newer SQLAlchemy)
-                    if hasattr(row, '_asdict'):
+                    if hasattr(row, "_asdict"):
                         row_dict = row._asdict()
                         logger.debug(f"Converted row using _asdict(): {row_dict}")
                     # Try accessing as mapping (works with SQLAlchemy result rows)
-                    elif hasattr(row, '_mapping'):
+                    elif hasattr(row, "_mapping"):
                         row_dict = dict(row._mapping)
                         logger.debug(f"Converted row using _mapping: {row_dict}")
                     # Fallback to manual key-value extraction
                     else:
                         row_dict = {key: getattr(row, key) for key in row.keys()}
-                        logger.debug(f"Converted row using manual extraction: {row_dict}")
+                        logger.debug(
+                            f"Converted row using manual extraction: {row_dict}"
+                        )
                     rows.append(row_dict)
                 except Exception as conversion_error:
                     logger.error(f"Error converting row to dict: {conversion_error}")
@@ -60,7 +65,7 @@ class DatabaseService:
                     logger.error(f"Row object: {row}")
                     logger.error(f"Row attributes: {dir(row)}")
                     raise
-            
+
             logger.info(f"Successfully converted {len(rows)} rows to dictionaries")
             return rows
         except SQLAlchemyError as e:
@@ -73,7 +78,7 @@ class DatabaseService:
         """Get total number of conversations"""
         query = "SELECT COUNT(*) as total FROM conversations"
         results = self.execute_query(query)
-        return results[0]['total'] if results else 0
+        return results[0]["total"] if results else 0
 
     def get_satisfaction_stats(self) -> Dict[str, int]:
         """Get satisfaction statistics"""
@@ -85,7 +90,7 @@ class DatabaseService:
         GROUP BY satisfaction
         """
         results = self.execute_query(query)
-        stats = {row['satisfaction']: row['count'] for row in results}
+        stats = {row["satisfaction"]: row["count"] for row in results}
         return stats
 
     def get_token_usage(self) -> Dict[str, int]:
@@ -98,7 +103,7 @@ class DatabaseService:
         """
         results = self.execute_query(query)
         if not results:
-            return {'input_tokens': 0, 'output_tokens': 0}
+            return {"input_tokens": 0, "output_tokens": 0}
         return results[0]
 
     def get_status_breakdown(self) -> Dict[str, int]:
@@ -111,5 +116,5 @@ class DatabaseService:
         GROUP BY status
         """
         results = self.execute_query(query)
-        breakdown = {row['status']: row['count'] for row in results}
+        breakdown = {row["status"]: row["count"] for row in results}
         return breakdown

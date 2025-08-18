@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from models.database import Base, init_db
 from config import settings
 
+
 def create_tables():
     """
     Create database tables.
@@ -20,6 +21,7 @@ def create_tables():
     except Exception as e:
         logging.error(f"Error creating database tables: {e}")
         sys.exit(1)
+
 
 def drop_tables():
     """
@@ -32,6 +34,7 @@ def drop_tables():
     except Exception as e:
         logging.error(f"Error dropping database tables: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=settings.log_level_int)

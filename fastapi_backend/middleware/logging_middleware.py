@@ -7,6 +7,7 @@ from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from datetime import datetime
 
+
 class LogRequestMiddleware(BaseHTTPMiddleware):
     """
     Middleware for logging incoming requests and responses.

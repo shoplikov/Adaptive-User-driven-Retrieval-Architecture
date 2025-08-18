@@ -9,6 +9,7 @@ import subprocess
 import time
 from pathlib import Path
 
+
 def main():
     # Get the root directory
     root_dir = Path(__file__).resolve().parent.parent
@@ -50,18 +51,31 @@ def main():
 
         # Install dependencies
         print("Installing dependencies...")
-        subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
+            check=True,
+        )
 
         # Start the FastAPI server
         print("Starting FastAPI server...")
         try:
             subprocess.run(
-                ["uvicorn", "fastapi_backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"],
-                check=True
+                [
+                    "uvicorn",
+                    "fastapi_backend.main:app",
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "8000",
+                    "--workers",
+                    "4",
+                ],
+                check=True,
             )
         except subprocess.CalledProcessError as e:
             print(f"Error starting FastAPI server: {e}")
             sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

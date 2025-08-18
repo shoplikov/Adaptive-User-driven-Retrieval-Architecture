@@ -7,6 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from datetime import datetime
 import logging
 
+
 class ConversationMiddleware(BaseHTTPMiddleware):
     """
     Middleware for managing conversation persistence.

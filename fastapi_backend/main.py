@@ -15,7 +15,15 @@ from pydantic import ValidationError
 from typing import List, Optional
 
 # Import custom modules
-from models.schemas import ChatCompletionRequest, ChatCompletionResponse, Message, Conversation as ConversationSchema, ConversationTurn as ConversationTurnSchema, ConversationCreate, ConversationUpdate
+from models.schemas import (
+    ChatCompletionRequest,
+    ChatCompletionResponse,
+    Message,
+    Conversation as ConversationSchema,
+    ConversationTurn as ConversationTurnSchema,
+    ConversationCreate,
+    ConversationUpdate,
+)
 from services.chat_completion import ChatCompletionService
 from services.conversation_service import ConversationService
 from config import settings
@@ -29,7 +37,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
 )
 
 # Configure CORS
@@ -58,14 +66,15 @@ async def chat_completions(
     x_session_id: Optional[str] = Header(
         default=None,
         alias="X-Conversation-Session-ID",
-        description="Conversation session/thread ID. If omitted, the server falls back to payload.session_id, then payload.user."
+        description="Conversation session/thread ID. If omitted, the server falls back to payload.session_id, then payload.user.",
     ),
 ):
     try:
-        session_id = x_session_id or getattr(payload, "session_id", None) or payload.user
+        session_id = (
+            x_session_id or getattr(payload, "session_id", None) or payload.user
+        )
         conversation = conversation_service.get_or_create_conversation(
-            session_id=session_id,
-            model=payload.model
+            session_id=session_id, model=payload.model
         )
         response.headers["X-Conversation-Id"] = str(conversation.id)
         response.headers["X-Conversation-Session-ID"] = conversation.session_id
@@ -75,8 +84,9 @@ async def chat_completions(
         logging.error(f"Error processing chat completion: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.get("/health", response_model=dict)
 async def health_check():
@@ -85,6 +95,7 @@ async def health_check():
     """
     return {"status": "healthy", "version": "1.0.0"}
 
+
 @app.get("/v1/models", response_model=List[str])
 async def list_models():
     """
@@ -92,8 +103,12 @@ async def list_models():
     """
     return [settings.DEFAULT_MODEL]
 
+
 @app.post("/v1/conversations", response_model=ConversationSchema)
-async def create_conversation(request: Request, model: str = Query(..., description="Model to use for the conversation")):
+async def create_conversation(
+    request: Request,
+    model: str = Query(..., description="Model to use for the conversation"),
+):
     """
     Create a new conversation.
     """
@@ -104,11 +119,16 @@ async def create_conversation(request: Request, model: str = Query(..., descript
         logging.error(f"Error creating conversation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
 
+
 @app.get("/v1/conversations/{conversation_id}", response_model=ConversationSchema)
-async def get_conversation(conversation_id: int = Path(..., description="ID of the conversation to retrieve", gt=0)):
+async def get_conversation(
+    conversation_id: int = Path(
+        ..., description="ID of the conversation to retrieve", gt=0
+    )
+):
     """
     Get conversation details by ID.
     """
@@ -116,19 +136,26 @@ async def get_conversation(conversation_id: int = Path(..., description="ID of t
         conversation = conversation_service.get_conversation_by_id(conversation_id)
         if not conversation:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Conversation not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found"
             )
         return conversation
     except Exception as e:
         logging.error(f"Error retrieving conversation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
 
-@app.get("/v1/conversations/{conversation_id}/messages", response_model=List[ConversationTurnSchema])
-async def get_conversation_history(conversation_id: int = Path(..., description="ID of the conversation to get history for", gt=0)):
+
+@app.get(
+    "/v1/conversations/{conversation_id}/messages",
+    response_model=List[ConversationTurnSchema],
+)
+async def get_conversation_history(
+    conversation_id: int = Path(
+        ..., description="ID of the conversation to get history for", gt=0
+    )
+):
     """
     Get message history for a conversation.
     """
@@ -139,47 +166,67 @@ async def get_conversation_history(conversation_id: int = Path(..., description=
         logging.error(f"Error retrieving conversation history: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
 
-@app.post("/v1/conversations/{conversation_id}/messages", response_model=ConversationTurnSchema)
+
+@app.post(
+    "/v1/conversations/{conversation_id}/messages",
+    response_model=ConversationTurnSchema,
+)
 async def add_message_to_conversation(
-    conversation_id: int = Path(..., description="ID of the conversation to add message to", gt=0),
-    message: Message = Body(..., description="Message to add to the conversation")
+    conversation_id: int = Path(
+        ..., description="ID of the conversation to add message to", gt=0
+    ),
+    message: Message = Body(..., description="Message to add to the conversation"),
 ):
     """
     Add a message to an existing conversation.
     """
     try:
-        turn = conversation_service.add_message_to_conversation(conversation_id, message)
+        turn = conversation_service.add_message_to_conversation(
+            conversation_id, message
+        )
         return turn
     except Exception as e:
         logging.error(f"Error adding message to conversation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.put("/v1/conversations/{conversation_id}", response_model=ConversationSchema)
 async def update_conversation(
-    conversation_id: int = Path(..., description="ID of the conversation to update", gt=0),
-    update_data: ConversationUpdate = Body(..., description="Data to update the conversation with")
+    conversation_id: int = Path(
+        ..., description="ID of the conversation to update", gt=0
+    ),
+    update_data: ConversationUpdate = Body(
+        ..., description="Data to update the conversation with"
+    ),
 ):
     """
     Update a conversation.
     """
     try:
-        conversation = conversation_service.update_conversation(conversation_id, update_data)
+        conversation = conversation_service.update_conversation(
+            conversation_id, update_data
+        )
         return conversation
     except Exception as e:
         logging.error(f"Error updating conversation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
 
+
 @app.delete("/v1/conversations/{conversation_id}", response_model=bool)
-async def delete_conversation(conversation_id: int = Path(..., description="ID of the conversation to delete", gt=0)):
+async def delete_conversation(
+    conversation_id: int = Path(
+        ..., description="ID of the conversation to delete", gt=0
+    )
+):
     """
     Delete a conversation.
     """
@@ -189,8 +236,9 @@ async def delete_conversation(conversation_id: int = Path(..., description="ID o
         logging.error(f"Error deleting conversation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 # Custom error handlers
 @app.exception_handler(RequestValidationError)
@@ -203,6 +251,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors(), "body": exc.body},
     )
 
+
 @app.exception_handler(ValidationError)
 async def pydantic_validation_exception_handler(request: Request, exc: ValidationError):
     """
@@ -212,6 +261,7 @@ async def pydantic_validation_exception_handler(request: Request, exc: Validatio
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": exc.errors(), "body": exc.body},
     )
+
 
 # Custom OpenAPI schema
 def custom_openapi():
@@ -223,21 +273,21 @@ def custom_openapi():
         description=app.description,
         routes=app.routes,
     )
-    openapi_schema["info"]["x-logo"] = {
-        "url": "https://example.com/logo.png"
-    }
+    openapi_schema["info"]["x-logo"] = {"url": "https://example.com/logo.png"}
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
 
 app.openapi = custom_openapi
 
 if __name__ == "__main__":
     import uvicorn
+
     logging.basicConfig(level=settings.log_level_int)
     uvicorn.run(
         "main:app",
         host=settings.API_HOST,
         port=settings.API_PORT,
         reload=True,
-        log_level=os.getenv("LOG_LEVEL", "INFO").lower()
+        log_level=os.getenv("LOG_LEVEL", "INFO").lower(),
     )

@@ -5,6 +5,7 @@ Configuration module for FastAPI backend.
 import os
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     """
     Application settings loaded from environment variables.
@@ -18,19 +19,29 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = int(os.getenv("DB_PORT", "5432"))
 
     # LMStudio configuration
-    LMSTUDIO_ENDPOINT: str = os.getenv("LLM_API_BASE", "http://localhost:1234/v1/chat/completions")
+    LMSTUDIO_ENDPOINT: str = os.getenv(
+        "LLM_API_BASE", "http://localhost:1234/v1/chat/completions"
+    )
     DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "hermes-3-llama-3.2-3b")
     DEFAULT_TEMPERATURE: float = float(os.getenv("DEFAULT_TEMPERATURE", "0.7"))
     DEFAULT_MAX_TOKENS: int = int(os.getenv("DEFAULT_MAX_TOKENS", "512"))
 
     # RAG Configuration
-    RAG_DOCS_PATH: str = os.getenv("RAG_DOCS_PATH", os.path.join("RAG", "documents.json"))
+    RAG_DOCS_PATH: str = os.getenv(
+        "RAG_DOCS_PATH", os.path.join("RAG", "documents.json")
+    )
     RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "3"))
     RAG_USE_RERANKER: bool = os.getenv("RAG_USE_RERANKER", "true").lower() == "true"
 
     # Feedback
-    FEEDBACK_STRATEGY_PATH: str = os.getenv("FEEDBACK_STRATEGY_PATH", os.path.join("wildfeedback", "data", "strategies.json"))
-    FEEDBACK_CLASSIFIER_PATH: str = os.getenv("FEEDBACK_CLASSIFIER_PATH", os.path.join("wildfeedback", "praise_classifier.pkl"))
+    FEEDBACK_STRATEGY_PATH: str = os.getenv(
+        "FEEDBACK_STRATEGY_PATH",
+        os.path.join("wildfeedback", "data", "strategies.json"),
+    )
+    FEEDBACK_CLASSIFIER_PATH: str = os.getenv(
+        "FEEDBACK_CLASSIFIER_PATH",
+        os.path.join("wildfeedback", "praise_classifier.pkl"),
+    )
 
     # API Configuration
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
@@ -45,19 +56,21 @@ class Settings(BaseSettings):
         "WARNING": 30,
         "INFO": 20,
         "DEBUG": 10,
-        "NOTSET": 0
+        "NOTSET": 0,
     }
 
     # Add a property to get the integer log level
     @property
     def log_level_int(self) -> int:
         return self._LOG_LEVEL_MAP.get(self.LOG_LEVEL, 20)
+
     APP_ENV: str = os.getenv("APP_ENV", "development")
 
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         extra = "allow"
+
 
 # Create a singleton instance of settings
 settings = Settings()

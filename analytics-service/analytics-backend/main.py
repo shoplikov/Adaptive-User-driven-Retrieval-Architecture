@@ -17,5 +17,5 @@ if __name__ == "__main__":
         host=os.getenv("API_HOST", "0.0.0.0"),
         port=int(os.getenv("API_PORT", "8001")),
         reload=True,
-        log_level=os.getenv("LOG_LEVEL", "INFO").lower()
+        log_level=os.getenv("LOG_LEVEL", "INFO").lower(),
     )

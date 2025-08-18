@@ -14,7 +14,12 @@ from sqlalchemy.orm import Session
 import hashlib
 from sqlalchemy import inspect
 
-from models.schemas import ChatCompletionRequest, ChatCompletionResponse, Message, Choice
+from models.schemas import (
+    ChatCompletionRequest,
+    ChatCompletionResponse,
+    Message,
+    Choice,
+)
 from config import settings
 from wildfeedback.praise import PraisePipeline
 from models.database import get_db, Conversation, ConversationTurn, engine
@@ -25,7 +30,8 @@ def _assert_schema():
     cols = {c["name"] for c in inspect(engine).get_columns("conversations")}
     if "session_id" not in cols:
         raise RuntimeError("DB schema mismatch: conversations.session_id is missing")
-    
+
+
 class ChatCompletionService:
     """
     Service for processing chat completion requests.
@@ -41,7 +47,9 @@ class ChatCompletionService:
 
         self.feedback = singletons.get_feedback()
 
-    def process_request(self, request: ChatCompletionRequest, conversation_id: Optional[int] = None) -> ChatCompletionResponse:
+    def process_request(
+        self, request: ChatCompletionRequest, conversation_id: Optional[int] = None
+    ) -> ChatCompletionResponse:
         """
         Process a chat completion request and return a response.
 
@@ -70,7 +78,9 @@ class ChatCompletionService:
 
         return response
 
-    def _process_chat_completion(self, request: ChatCompletionRequest, conversation_id: Optional[int] = None) -> ChatCompletionResponse:
+    def _process_chat_completion(
+        self, request: ChatCompletionRequest, conversation_id: Optional[int] = None
+    ) -> ChatCompletionResponse:
         """
         Process the chat completion request and return a response.
 
@@ -95,15 +105,20 @@ class ChatCompletionService:
         conversation_history = []
         if conversation_id:
             from services.conversation_service import ConversationService
+
             conversation_service = ConversationService()
-            conversation_history = conversation_service.get_conversation_history(conversation_id)
+            conversation_history = conversation_service.get_conversation_history(
+                conversation_id
+            )
 
         # RAG retrieval
         docs = self.rag.query(user_message.content)
         context = "\n".join([doc["content"] for doc in docs])
 
         # Include conversation history in context
-        history_context = "\n".join([f"[{turn.role}]: {turn.content}" for turn in conversation_history])
+        history_context = "\n".join(
+            [f"[{turn.role}]: {turn.content}" for turn in conversation_history]
+        )
         full_prompt = f"[CONTEXT]\n{context}\n[HISTORY]\n{history_context}\n[USER]\n{user_message.content}"
 
         # Call LM Studio endpoint
@@ -126,13 +141,10 @@ class ChatCompletionService:
             choices=[
                 Choice(
                     index=0,
-                    message=Message(
-                        role="assistant",
-                        content=ai_reply
-                    ),
-                    finish_reason="stop"
+                    message=Message(role="assistant", content=ai_reply),
+                    finish_reason="stop",
                 )
-            ]
+            ],
         )
 
         return response
@@ -151,10 +163,7 @@ class ChatCompletionService:
 
         try:
             resp = requests.post(
-                settings.LMSTUDIO_ENDPOINT,
-                headers=headers,
-                json=payload,
-                timeout=30
+                settings.LMSTUDIO_ENDPOINT, headers=headers, json=payload, timeout=30
             )
             resp.raise_for_status()
             data = resp.json()
@@ -163,7 +172,12 @@ class ChatCompletionService:
             logging.error(f"AI query error: {e}")
             return f"[Error contacting AI: {e}]"
 
-    def _save_conversation_to_db(self, request: ChatCompletionRequest, response: ChatCompletionResponse, conversation_id: Optional[int] = None):
+    def _save_conversation_to_db(
+        self,
+        request: ChatCompletionRequest,
+        response: ChatCompletionResponse,
+        conversation_id: Optional[int] = None,
+    ):
         """
         Save the conversation to the database.
 
@@ -177,12 +191,15 @@ class ChatCompletionService:
         try:
             if conversation_id:
                 # Continue existing conversation
-                conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+                conversation = (
+                    db.query(Conversation)
+                    .filter(Conversation.id == conversation_id)
+                    .first()
+                )
                 if not conversation:
                     # Create new conversation if ID is invalid
                     conversation = Conversation(
-                        model=request.model,
-                        extra_data={"request": request.dict()}
+                        model=request.model, extra_data={"request": request.dict()}
                     )
                     db.add(conversation)
                     db.commit()
@@ -190,8 +207,7 @@ class ChatCompletionService:
             else:
                 # Create new conversation
                 conversation = Conversation(
-                    model=request.model,
-                    extra_data={"request": request.dict()}
+                    model=request.model, extra_data={"request": request.dict()}
                 )
 
                 db.add(conversation)
@@ -201,11 +217,17 @@ class ChatCompletionService:
             # Save each message as a turn
             for i, message in enumerate(request.messages):
                 # Check for duplicate message
-                message_hash = hashlib.sha256(f"{message.role}:{message.content}".encode()).hexdigest()
-                existing_turn = db.query(ConversationTurn).filter(
-                    ConversationTurn.conversation_id == conversation.id,
-                    ConversationTurn.message_hash == message_hash
-                ).first()
+                message_hash = hashlib.sha256(
+                    f"{message.role}:{message.content}".encode()
+                ).hexdigest()
+                existing_turn = (
+                    db.query(ConversationTurn)
+                    .filter(
+                        ConversationTurn.conversation_id == conversation.id,
+                        ConversationTurn.message_hash == message_hash,
+                    )
+                    .first()
+                )
 
                 if not existing_turn:
                     turn = ConversationTurn(
@@ -214,17 +236,25 @@ class ChatCompletionService:
                         content=message.content,
                         message_hash=message_hash,
                         # Add satisfaction score for user messages
-                        satisfaction_score=None if message.role != "user" else "Neutral",
-                        extra_data={"index": i}
+                        satisfaction_score=None
+                        if message.role != "user"
+                        else "Neutral",
+                        extra_data={"index": i},
                     )
                     db.add(turn)
 
             # Save assistant response
-            assistant_message_hash = hashlib.sha256(f"assistant:{response.choices[0].message.content}".encode()).hexdigest()
-            existing_assistant_turn = db.query(ConversationTurn).filter(
-                ConversationTurn.conversation_id == conversation.id,
-                ConversationTurn.message_hash == assistant_message_hash
-            ).first()
+            assistant_message_hash = hashlib.sha256(
+                f"assistant:{response.choices[0].message.content}".encode()
+            ).hexdigest()
+            existing_assistant_turn = (
+                db.query(ConversationTurn)
+                .filter(
+                    ConversationTurn.conversation_id == conversation.id,
+                    ConversationTurn.message_hash == assistant_message_hash,
+                )
+                .first()
+            )
 
             if not existing_assistant_turn:
                 assistant_turn = ConversationTurn(
@@ -232,7 +262,7 @@ class ChatCompletionService:
                     role="assistant",
                     content=response.choices[0].message.content,
                     message_hash=assistant_message_hash,
-                    extra_data={"response_id": response.id}
+                    extra_data={"response_id": response.id},
                 )
                 db.add(assistant_turn)
 

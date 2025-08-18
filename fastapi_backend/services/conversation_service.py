@@ -9,6 +9,7 @@ from models.schemas import Message, ConversationTurn as ConversationTurnSchema
 import hashlib
 from datetime import datetime
 
+
 class ConversationService:
     """Service for managing conversations and their state."""
 
@@ -16,7 +17,12 @@ class ConversationService:
         """Initialize the conversation service."""
         self.logger = logging.getLogger(__name__)
 
-    def create_conversation(self, model: str, user_id: Optional[str] = None, session_id: Optional[str] = None) -> Conversation:
+    def create_conversation(
+        self,
+        model: str,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+    ) -> Conversation:
         """
         Create a new conversation with a unique session ID.
         """
@@ -25,7 +31,7 @@ class ConversationService:
             conversation = Conversation(
                 model=model,
                 user_id=user_id,
-                session_id=session_id  # ✅ Store it in the DB
+                session_id=session_id,  # ✅ Store it in the DB
             )
             db.add(conversation)
             db.commit()
@@ -37,7 +43,6 @@ class ConversationService:
             raise
         finally:
             db.close()
-
 
     def get_conversation_by_id(self, conversation_id: int) -> Optional[Conversation]:
         """
@@ -51,7 +56,11 @@ class ConversationService:
         """
         db: Session = next(get_db())
         try:
-            return db.query(Conversation).filter(Conversation.id == conversation_id).first()
+            return (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .first()
+            )
         except SQLAlchemyError as e:
             self.logger.error(f"Error retrieving conversation: {e}")
             return None
@@ -70,7 +79,11 @@ class ConversationService:
         """
         db: Session = next(get_db())
         try:
-            return db.query(Conversation).filter(Conversation.session_id == session_id).first()
+            return (
+                db.query(Conversation)
+                .filter(Conversation.session_id == session_id)
+                .first()
+            )
         except SQLAlchemyError as e:
             self.logger.error(f"Error retrieving conversation by session: {e}")
             return None
@@ -83,7 +96,9 @@ class ConversationService:
         """
         return hashlib.sha256(f"{role}:{message}".encode()).hexdigest()
 
-    def add_message_to_conversation(self, conversation_id: int, message: Message) -> ConversationTurn:
+    def add_message_to_conversation(
+        self, conversation_id: int, message: Message
+    ) -> ConversationTurn:
         """
         Add a message to an existing conversation with deduplication.
 
@@ -104,19 +119,29 @@ class ConversationService:
         db: Session = next(get_db())
         try:
             # Get the conversation
-            conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+            conversation = (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .first()
+            )
             if not conversation:
                 raise ValueError(f"Conversation with ID {conversation_id} not found")
 
             # Check for duplicate message
             message_hash = self._generate_message_hash(message.content, message.role)
-            existing_turn = db.query(ConversationTurn).filter(
-                ConversationTurn.conversation_id == conversation_id,
-                ConversationTurn.message_hash == message_hash
-            ).first()
+            existing_turn = (
+                db.query(ConversationTurn)
+                .filter(
+                    ConversationTurn.conversation_id == conversation_id,
+                    ConversationTurn.message_hash == message_hash,
+                )
+                .first()
+            )
 
             if existing_turn:
-                self.logger.warning(f"Duplicate message detected, using existing turn: {existing_turn.id}")
+                self.logger.warning(
+                    f"Duplicate message detected, using existing turn: {existing_turn.id}"
+                )
                 return existing_turn
 
             # Create the conversation turn
@@ -125,7 +150,7 @@ class ConversationService:
                 role=message.role,
                 content=message.content,
                 message_hash=message_hash,
-                extra_data={"index": len(conversation.turns)}
+                extra_data={"index": len(conversation.turns)},
             )
 
             db.add(turn)
@@ -133,7 +158,9 @@ class ConversationService:
             db.refresh(turn)
 
             # Update conversation metadata
-            conversation.total_tokens = (conversation.total_tokens or 0) + (len(message.content.split()) or 0)
+            conversation.total_tokens = (conversation.total_tokens or 0) + (
+                len(message.content.split()) or 0
+            )
             conversation.updated_at = datetime.utcnow()
             db.commit()
 
@@ -149,7 +176,9 @@ class ConversationService:
         finally:
             db.close()
 
-    def get_conversation_history(self, conversation_id: int) -> List[ConversationTurnSchema]:
+    def get_conversation_history(
+        self, conversation_id: int
+    ) -> List[ConversationTurnSchema]:
         """
         Retrieve complete message history for a conversation.
 
@@ -165,12 +194,21 @@ class ConversationService:
         db: Session = next(get_db())
         try:
             # Get the conversation
-            conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+            conversation = (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .first()
+            )
             if not conversation:
                 raise ValueError(f"Conversation with ID {conversation_id} not found")
 
             # Get all turns for this conversation
-            turns = db.query(ConversationTurn).filter(ConversationTurn.conversation_id == conversation_id).order_by(ConversationTurn.created_at).all()
+            turns = (
+                db.query(ConversationTurn)
+                .filter(ConversationTurn.conversation_id == conversation_id)
+                .order_by(ConversationTurn.created_at)
+                .all()
+            )
 
             # Convert to schema objects
             return [ConversationTurnSchema.from_orm(turn) for turn in turns]
@@ -192,7 +230,11 @@ class ConversationService:
         """
         db: Session = next(get_db())
         try:
-            conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+            conversation = (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .first()
+            )
             if not conversation:
                 return False
 
@@ -207,7 +249,9 @@ class ConversationService:
         finally:
             db.close()
 
-    def get_or_create_conversation(self, session_id: Optional[str] = None, model: Optional[str] = None) -> Conversation:
+    def get_or_create_conversation(
+        self, session_id: Optional[str] = None, model: Optional[str] = None
+    ) -> Conversation:
         if session_id:
             conversation = self.get_conversation_by_session(session_id)
             if conversation:
@@ -219,8 +263,9 @@ class ConversationService:
         # ✅ Pass session_id when creating
         return self.create_conversation(model=model, session_id=session_id)
 
-
-    def update_conversation(self, conversation_id: int, update_data: Dict[str, Any]) -> Optional[Conversation]:
+    def update_conversation(
+        self, conversation_id: int, update_data: Dict[str, Any]
+    ) -> Optional[Conversation]:
         """
         Update a conversation with new data.
 
@@ -233,7 +278,11 @@ class ConversationService:
         """
         db: Session = next(get_db())
         try:
-            conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+            conversation = (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .first()
+            )
             if not conversation:
                 return None
 
@@ -270,10 +319,16 @@ class ConversationService:
         db: Session = next(get_db())
         try:
             # First delete all turns associated with this conversation
-            db.query(ConversationTurn).filter(ConversationTurn.conversation_id == conversation_id).delete()
+            db.query(ConversationTurn).filter(
+                ConversationTurn.conversation_id == conversation_id
+            ).delete()
 
             # Then delete the conversation itself
-            result = db.query(Conversation).filter(Conversation.id == conversation_id).delete()
+            result = (
+                db.query(Conversation)
+                .filter(Conversation.id == conversation_id)
+                .delete()
+            )
             if result == 0:
                 return False
 

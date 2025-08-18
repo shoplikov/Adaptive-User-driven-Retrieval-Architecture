@@ -3,7 +3,17 @@ Database models and connection management with SQLAlchemy.
 """
 
 import os
-from sqlalchemy import create_engine, Column, String, Integer, DateTime, Boolean, Float, JSON, ForeignKey
+from sqlalchemy import (
+    create_engine,
+    Column,
+    String,
+    Integer,
+    DateTime,
+    Boolean,
+    Float,
+    JSON,
+    ForeignKey,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -12,7 +22,7 @@ import sys
 import os
 
 # Add the root directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from fastapi_backend.config import settings
 
 # Create the database URL
@@ -41,10 +51,12 @@ def get_db():
     finally:
         db.close()
 
+
 class Conversation(Base):
     """
     Database model for conversations.
     """
+
     __tablename__ = "conversations"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
@@ -58,16 +70,24 @@ class Conversation(Base):
     is_active = Column(Boolean, default=True)
     extra_data = Column(JSON, nullable=True)
     # Relationship to turns
-    turns = relationship("ConversationTurn", back_populates="conversation", order_by="desc(ConversationTurn.created_at)")
+    turns = relationship(
+        "ConversationTurn",
+        back_populates="conversation",
+        order_by="desc(ConversationTurn.created_at)",
+    )
+
 
 class ConversationTurn(Base):
     """
     Database model for conversation turns.
     """
+
     __tablename__ = "conversation_turns"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False, index=True)
+    conversation_id = Column(
+        Integer, ForeignKey("conversations.id"), nullable=False, index=True
+    )
     message_id = Column(String(36), unique=True, default=lambda: str(uuid4()))
     role = Column(String(20), nullable=False, server_default="user")
     content = Column(String, nullable=False)
@@ -79,6 +99,7 @@ class ConversationTurn(Base):
     extra_data = Column(JSON, nullable=True)
     # Relationship to conversation
     conversation = relationship("Conversation", back_populates="turns")
+
 
 # Create tables (if not exists)
 def init_db():
