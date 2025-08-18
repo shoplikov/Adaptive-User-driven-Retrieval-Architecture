@@ -61,7 +61,7 @@ AURA Chat API is a powerful, production-ready FastAPI backend that provides an O
    # Application settings
    API_HOST=0.0.0.0
    API_PORT=8000
-   LOG_LEVEL=info
+   LOG_LEVEL=INFO
    ```
 
 4. Initialize the database:

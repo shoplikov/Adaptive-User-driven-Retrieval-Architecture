@@ -34,7 +34,7 @@ def drop_tables():
         sys.exit(1)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=settings.LOG_LEVEL)
+    logging.basicConfig(level=settings.log_level_int)
     if len(sys.argv) < 2:
         print("Usage: python -m migrations <create|drop>")
         sys.exit(1)

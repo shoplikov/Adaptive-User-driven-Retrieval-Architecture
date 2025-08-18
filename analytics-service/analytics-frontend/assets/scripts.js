@@ -113,12 +113,20 @@ function renderSatisfactionChart(data) {
     const labels = Object.keys(data);
     const counts = Object.values(data);
 
-    const ctx = elements.satisfactionCanvas.getContext('2d');
+    const canvas = elements.satisfactionCanvas;
+    const ctx = canvas.getContext('2d');
 
     // Destroy previous chart instance if it exists
     if (satisfactionChart) {
         satisfactionChart.destroy();
+        satisfactionChart = null;
     }
+
+    // Reset canvas size to prevent accumulation
+    canvas.style.width = '';
+    canvas.style.height = '';
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 300; // Fixed height from CSS
 
     satisfactionChart = new Chart(ctx, {
         type: 'pie',
@@ -145,7 +153,14 @@ function renderSatisfactionChart(data) {
                 position: 'right'
             },
             animation: {
-                animateScale: true
+                animateScale: false // Disable animation to prevent size conflicts
+            },
+            onResize: function(chart, size) {
+                // Prevent height from growing beyond container
+                if (size.height > 300) {
+                    chart.canvas.style.height = '300px';
+                    chart.resize();
+                }
             }
         }
     });
@@ -159,12 +174,20 @@ function renderStatusChart(data) {
     const labels = Object.keys(data);
     const counts = Object.values(data);
 
-    const ctx = elements.statusCanvas.getContext('2d');
+    const canvas = elements.statusCanvas;
+    const ctx = canvas.getContext('2d');
 
     // Destroy previous chart instance if it exists
     if (statusChart) {
         statusChart.destroy();
+        statusChart = null;
     }
+
+    // Reset canvas size to prevent accumulation
+    canvas.style.width = '';
+    canvas.style.height = '';
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 300; // Fixed height from CSS
 
     statusChart = new Chart(ctx, {
         type: 'doughnut',
@@ -191,7 +214,14 @@ function renderStatusChart(data) {
                 position: 'right'
             },
             animation: {
-                animateScale: true
+                animateScale: false // Disable animation to prevent size conflicts
+            },
+            onResize: function(chart, size) {
+                // Prevent height from growing beyond container
+                if (size.height > 300) {
+                    chart.canvas.style.height = '300px';
+                    chart.resize();
+                }
             }
         }
     });

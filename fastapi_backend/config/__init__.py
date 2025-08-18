@@ -35,7 +35,23 @@ class Settings(BaseSettings):
     # API Configuration
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
     API_PORT: int = int(os.getenv("API_PORT", "8000"))
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    # Log level as string (for Pydantic validation)
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
+
+    # Map string log levels to actual logging constants
+    _LOG_LEVEL_MAP = {
+        "CRITICAL": 50,
+        "ERROR": 40,
+        "WARNING": 30,
+        "INFO": 20,
+        "DEBUG": 10,
+        "NOTSET": 0
+    }
+
+    # Add a property to get the integer log level
+    @property
+    def log_level_int(self) -> int:
+        return self._LOG_LEVEL_MAP.get(self.LOG_LEVEL, 20)
     APP_ENV: str = os.getenv("APP_ENV", "development")
 
     class Config:

@@ -233,11 +233,11 @@ app.openapi = custom_openapi
 
 if __name__ == "__main__":
     import uvicorn
-    logging.basicConfig(level=settings.LOG_LEVEL)
+    logging.basicConfig(level=settings.log_level_int)
     uvicorn.run(
         "main:app",
         host=settings.API_HOST,
         port=settings.API_PORT,
         reload=True,
-        log_level=settings.LOG_LEVEL.lower()
+        log_level=os.getenv("LOG_LEVEL", "INFO").lower()
     )
