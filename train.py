@@ -3,11 +3,12 @@ import json
 from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+import config
 
 # --- Настройки ---
 MODEL_NAME = "NousResearch/Hermes-3-Llama-3.2-3b"  # 3B модель
 DATA_PATH = "wildfeedback/data/conversations_raw.json"
-OUTPUT_DIR = "lora/lora-hermes3b"
+OUTPUT_DIR = config.LORA_PATH
 
 # --- Загружаем датасет ---
 def load_dataset(path):
