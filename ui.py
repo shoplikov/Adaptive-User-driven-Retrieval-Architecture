@@ -3,7 +3,7 @@ from tkinter import scrolledtext, END
 import requests
 import json
 import os
-from RAG.main import RAG
+from RAG.pipeline import RAG
 from wildfeedback.praise import PraisePipeline
 
 # CONFIGURATION
@@ -114,7 +114,7 @@ class ChatUI:
     def query_ai(self, prompt):
         headers = {"Content-Type": "application/json"}
         payload = {
-            "model": "hermes-3-llama-3.2-3b",
+            "model": "my_model",
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 512,
             "temperature": 0.7,
