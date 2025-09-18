@@ -258,5 +258,61 @@
         "text": "Привет! У меня все хорошо. А у тебя что, дела на хорошем уровне? Если тебе нужна помощь или информация - я всегда рад помочь!"
       }
     ]
+  },
+  {
+    "conversation_id": "c4544e90-7d0a-4ea5-be56-63462c23798c",
+    "turns": [
+      {
+        "role": "user",
+        "text": "hi",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fd9d0fad6a0>: Failed to establish a new connection: [Errno 111] Connection refused'))]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "77a325e3-cfaf-40b4-ae66-287cc0db346e",
+    "turns": [
+      {
+        "role": "user",
+        "text": "eh eh",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fd9d0f6d590>: Failed to establish a new connection: [Errno 111] Connection refused'))]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "f2a89fb4-e10b-4cf6-979b-2bcf32e114f0",
+    "turns": [
+      {
+        "role": "user",
+        "text": "ok",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f830420ecf0>: Failed to establish a new connection: [Errno 111] Connection refused'))]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "27273051-5d12-4198-9805-595d8b8ab98b",
+    "turns": [
+      {
+        "role": "user",
+        "text": "hi",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f41f8962cf0>: Failed to establish a new connection: [Errno 111] Connection refused'))]"
+      }
+    ]
   }
 ]
