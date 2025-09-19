@@ -1,151 +1,259 @@
-# AURA
+# AURA: Adaptive User-driven Retrieval Architecture
 
-## Overview
+An adaptive AI system with a feedback-powered RAG pipeline. AURA uses WildFeedback to capture user preferences automatically and fine-tunes lightweight LoRA adapters on a LLaMA base model, enabling continuous, low-cost, scalable learning. The quantized model (GGUF) serves fast, cost-efficient responses via llama.cpp.
 
-AURA (Adaptive-User-driven-Retrieval-Architecture) is a comprehensive chatbot system with Retrieval-Augmented Generation (RAG) capabilities. It provides a FastAPI backend with a Tkinter-based chat interface, leveraging advanced NLP models for intelligent conversation and feedback analysis.
+![Architecture](docs/architecture.png)
 
-## Features
+---
 
-- **Retrieval-Augmented Generation (RAG)**: Advanced document retrieval using FAISS and sentence transformers
-- **Feedback Analysis**: Machine learning-based satisfaction classification
-- **Modular Architecture**: Separate components for API, UI, and services
-- **Docker Support**: Easy deployment with Docker Compose
-- **Multilingual Support**: Unicode and Cyrillic character support
+## Why AURA
 
-## System Architecture
+- **Problem**: Typical RAG systems do not learn from user interactions and fail to adapt in real-world use.
+- **Goal**: Build an autonomous system that continuously improves by extracting feedback directly from conversations and iteratively fine-tuning.
 
-- **Backend**: FastAPI with SQLAlchemy ORM
-- **Database**: PostgreSQL
-- **LLM Integration**: OpenAI API or local LM Studio
-- **Frontend**: Tkinter-based chat interface
-- **RAG System**: FAISS index with sentence transformers
-- **Feedback System**: ML-based classification with scikit-learn
+## System Overview
 
-## Prerequisites
+- **Frontend**: React + TailwindCSS (`frontend/`)
+- **Backend**: FastAPI (`backend/`)
+- **RAG**: FAISS + SentenceTransformers (`RAG/`)
+- **Feedback**: WildFeedback satisfaction inference (`wildfeedback/`)
+- **LLM**: LLaMA 3.x (Nous Hermes) with LoRA fine-tuning and GGUF inference
+- **Containers**: Docker + Docker Compose
+- **Cloud (optional)**: AWS S3 for data, SageMaker for training/hosting
 
-1. **PostgreSQL Database** - Either local installation or use the Docker setup
-2. **OpenAI API Key** - For LLM functionality (or configure for local LM Studio)
-3. **Python 3.8+** with the required packages
-4. **RAG Documents** - The RAG/documents.json file
+## Technologies
 
-## Installation
+- **Models**: LLaMA 3.x (Nous Hermes variant)
+- **Fine-tuning**: LoRA via PEFT
+- **Quantization & Inference**: llama.cpp (GGUF)
+- **Frameworks**: Hugging Face Transformers, PEFT, PyTorch
+- **Cloud Services**: AWS S3, AWS SageMaker
 
-### 1. Clone the Repository
+## Learning Loop
+
+1. Store raw conversations in S3 (or locally in `wildfeedback/data/conversations_raw.json`).
+2. WildFeedback generates structured training data and satisfaction labels.
+3. LoRA fine-tuning on base LLaMA model (Hermes 3).
+4. Merge LoRA → base; convert HF weights to GGUF via llama.cpp and quantize (e.g., Q8_0).
+5. Deploy updated model (e.g., SageMaker endpoint or local llama.cpp server).
+
+---
+
+## Quickstart (Local)
+
+### Prerequisites
+
+- Python 3.10+
+- Node 18+
+- LM Studio or a compatible llama.cpp HTTP server for chat completions
+- `RAG/documents.json` (JSON list of docs with fields: `id`, `title`, `content`)
+
+### 1) Install dependencies
 
 ```bash
-git clone https://github.com/your-repo/aura.git
-cd aura
-```
-
-### 2. Install Dependencies
-
-```bash
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+cd frontend && npm install
 ```
 
-### 3. Set Up Environment Variables
+### 2) Prepare RAG documents
 
-Create a `.env` file with your configuration:
+Ensure `RAG/documents.json` exists. Minimal example (array of objects):
+
+```json
+[
+  { "id": "doc-1", "title": "Intro", "content": "AURA overview..." },
+  { "id": "doc-2", "title": "Setup", "content": "How to run..." }
+]
+```
+
+On first run, a FAISS index (`rag.index`) and metadata (`rag_meta.json`) are built automatically.
+
+### 3) Start the backend
 
 ```bash
-cp .env.example .env
+cd backend
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Edit the `.env` file with your database and API credentials:
+Notes:
+- Backend calls the LLM at `LMSTUDIO_ENDPOINT` (defaults to `http://localhost:1234/v1/chat/completions`) with `MODEL_NAME` (defaults to `my-model`). You can change these constants in `backend/main.py`.
+- CORS is open for development; restrict before production.
 
-```ini
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=aura_chatbot
-LLM_API_KEY=your_openai_api_key
-```
-
-## Running the Application
-
-### Option 1: Local Development
-
-#### 1. Start the FastAPI Server
+### 4) Start the frontend
 
 ```bash
-# Run the FastAPI server
-uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+cd frontend
+npm run dev
 ```
 
-#### 2. Run the Chat Interface
+The app fetches `POST http://localhost:8000/chat` directly (see `frontend/src/App.jsx`).
+
+### 5) (Optional) Desktop UI
 
 ```bash
-# Run the UI application
 python ui.py
 ```
 
-### Option 2: Docker (Recommended)
+---
+
+## Docker (Dev)
 
 ```bash
-# Create .env file with required variables
-echo "POSTGRES_USER=postgres" >> .env
-echo "POSTGRES_PASSWORD=password" >> .env
-echo "POSTGRES_DB=aura_chatbot" >> .env
-
-# Run with Docker Compose
-cd docker
-docker-compose up --build
+docker compose up --build
 ```
 
-## API Endpoints
+Services:
+- `frontend`: Vite dev server on `http://localhost:3000`
+- `backend`: FastAPI on `http://localhost:8000`
 
-The FastAPI backend provides the following endpoints:
+Tip: The current backend image installs a minimal set of packages. For full RAG/feedback in-container, extend the Dockerfile to install the project `requirements.txt`.
 
-- **Conversations**: `/conversations` - Manage chat conversations
-- **Feedback**: `/feedback` - Submit and retrieve feedback
-- **Documents**: `/documents` - Manage documents for RAG
-- **LLM**: `/llm` - Configure and use language models
-- **Metrics**: `/metrics` - Track system performance
-- **System**: `/system` - System configuration
+---
 
-## UI Configuration
+## API
 
-The chat interface (`ui.py`) connects to:
-- **LM Studio Endpoint**: `http://localhost:1234` (default)
-- **RAG System**: Uses local RAG/documents.json
-- **Feedback Classifier**: Uses wildfeedback/praise_classifier.pkl
+Base URL: `http://localhost:8000`
 
-## Development
+- `GET /` → `{ "status": "API is running" }`
+- `POST /chat`
+  - Request body:
+    ```json
+    { "message": "What is AURA?" }
+    ```
+  - Response body (abridged):
+    ```json
+    {
+      "user": "What is AURA?",
+      "reply": "...",
+      "feedback": "SAT | DSAT | Unknown",
+      "retrieved_docs": [ { "id": "...", "title": "...", "content": "..." } ]
+    }
+    ```
 
-### Database Migrations
+---
 
-The application uses SQLAlchemy for database operations. To initialize the database:
+## RAG Pipeline
+
+Located in `RAG/`:
+
+- `pipeline.py`: Builds/loads FAISS index from `RAG/documents.json` using `SentenceTransformer` embeddings. On query, retrieves top-k and optionally reranks.
+- `reranker.py`: CrossEncoder reranker (`cross-encoder/ms-marco-MiniLM-L-6-v2`).
+
+Key behavior:
+- Index is built on-demand and cached to `rag.index` with metadata `rag_meta.json`.
+- GPU is used for embeddings if available.
+
+---
+
+## WildFeedback (Satisfaction & Strategy Signals)
+
+Located in `wildfeedback/`:
+
+- `praise.py` (`PraisePipeline`):
+  - Loads strategy templates from `wildfeedback/data/strategies.json`.
+  - Embeds with `all-MiniLM-L6-v2` and computes similarity features.
+  - Uses `praise_classifier.pkl` (LogReg) to output soft probabilities over labels.
+- `train_classifier.py`:
+  - Trains a logistic regression classifier from `wildfeedback/data/satisfaction_labels.json`.
+  - Produces `wildfeedback/praise_classifier.pkl`.
+
+Train the classifier:
 
 ```bash
-python -c "from src.config.database import init_db; init_db()"
+cd wildfeedback
+python train_classifier.py
 ```
 
-### Testing
+---
 
-The application includes comprehensive testing capabilities. To run tests:
+## Fine-tuning and Model Lifecycle
+
+Config is loaded from `config.py` which reads environment variables:
+
+```env
+BASE_MODEL_PATH=NousResearch/Hermes-3-Llama-3.2-3b
+LORA_PATH=./outputs/lora
+OUTPUT_PATH=./outputs/merged
+```
+
+### 1) LoRA fine-tuning
 
 ```bash
-pytest tests/
+python train.py
 ```
 
-## Contributing
+Details:
+- Base model: `NousResearch/Hermes-3-Llama-3.2-3b`
+- 8-bit loading with PEFT LoRA (`q_proj`, `v_proj`), sequence length 512
+- Input data: `wildfeedback/data/conversations_raw.json`
+- Output adapters written to `LORA_PATH`
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
+### 2) Merge LoRA → base
 
-## License
+```bash
+python merged.py
+```
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Writes a merged Hugging Face model to `OUTPUT_PATH`.
+
+### 3) Convert HF → GGUF (llama.cpp) and quantize
+
+Example using llama.cpp:
+
+```bash
+# Convert HF weights to GGUF
+python ./convert-hf-to-gguf.py --model "$OUTPUT_PATH" --outfile ./outputs/model.gguf
+
+# Quantize to Q8_0 (or desired type)
+./quantize ./outputs/model.gguf ./outputs/model.Q8_0.gguf q8_0
+```
+
+### 4) Serve with llama.cpp (or LM Studio)
+
+For development, you can use LM Studio and configure the model name to match `MODEL_NAME` in `backend/main.py`.
+
+---
+
+## Cloud Path (AWS, optional)
+
+1. Push `wildfeedback/data/conversations_raw.json` to S3 (or stream logs directly).
+2. Launch a SageMaker training job to run `train.py` and write LoRA adapters to S3.
+3. Merge adapters with the base model (`merged.py`) and convert to GGUF.
+4. Host updated model on SageMaker endpoint or a GPU EC2 instance running llama.cpp.
+5. Point `LMSTUDIO_ENDPOINT` in the backend to the new endpoint.
+
+---
+
+## Project Layout
+
+```
+backend/            # FastAPI app (endpoints: /, /chat)
+frontend/           # React + Vite + Tailwind chat UI
+RAG/                # Retrieval (FAISS) + reranker
+wildfeedback/       # Feedback pipeline, classifier training, data
+train.py            # LoRA fine-tuning script
+merged.py           # Merge LoRA adapters into base HF model
+ui.py               # Optional desktop chat UI
+requirements.txt    # Python dependencies
+docker-compose.yaml # Dev compose (frontend + backend)
+docs/               # Diagrams, slides
+```
+
+---
+
+## Security & Production Notes
+
+- Restrict `CORS` (`backend/main.py`) before deploying.
+- Store raw conversations securely; anonymize if needed.
+- Validate and sanitize uploaded/ingested documents.
+- Prefer private endpoints and IAM roles when using AWS.
+
+---
 
 ## Acknowledgments
 
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [SQLAlchemy](https://www.sqlalchemy.org/)
-- [FAISS](https://github.com/facebookresearch/faiss)
-- [Sentence Transformers](https://www.sbert.net/)
-- [scikit-learn](https://scikit-learn.org/)
-- [OpenAI](https://www.openai.com/)
+- FastAPI, Uvicorn
+- SentenceTransformers, FAISS
+- Hugging Face Transformers, PEFT, PyTorch
+- llama.cpp
