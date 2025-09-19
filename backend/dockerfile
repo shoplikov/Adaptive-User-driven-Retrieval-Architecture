@@ -1,0 +1,17 @@
+FROM python:3.13.7-slim
+
+WORKDIR /app
+
+# Копируем backend
+COPY ./backend /app
+
+# Создаём симлинк на RAG
+RUN ln -s /app/../ /app/.
+
+# Обновляем pip и ставим зависимости
+RUN pip install --upgrade pip
+RUN pip install fastapi uvicorn pydantic requests
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
