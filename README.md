@@ -11,32 +11,6 @@ An adaptive AI system with a feedback-powered RAG pipeline. AURA uses WildFeedba
 - **Problem**: Typical RAG systems do not learn from user interactions and fail to adapt in real-world use.
 - **Goal**: Build an autonomous system that continuously improves by extracting feedback directly from conversations and iteratively fine-tuning.
 
-## System Overview
-
-- **Frontend**: React + TailwindCSS (`frontend/`)
-- **Backend**: FastAPI (`backend/`)
-- **RAG**: FAISS + SentenceTransformers (`RAG/`)
-- **Feedback**: WildFeedback satisfaction inference (`wildfeedback/`)
-- **LLM**: LLaMA 3.x (Nous Hermes) with LoRA fine-tuning and GGUF inference
-- **Containers**: Docker + Docker Compose
-- **Cloud (optional)**: AWS S3 for data, SageMaker for training/hosting
-
-## Technologies
-
-- **Models**: LLaMA 3.x (Nous Hermes variant)
-- **Fine-tuning**: LoRA via PEFT
-- **Quantization & Inference**: llama.cpp (GGUF)
-- **Frameworks**: Hugging Face Transformers, PEFT, PyTorch
-- **Cloud Services**: AWS S3, AWS SageMaker
-
-## Learning Loop
-
-1. Store raw conversations in S3 (or locally in `wildfeedback/data/conversations_raw.json`).
-2. WildFeedback generates structured training data and satisfaction labels.
-3. LoRA fine-tuning on base LLaMA model (Hermes 3).
-4. Merge LoRA → base; convert HF weights to GGUF via llama.cpp and quantize (e.g., Q8_0).
-5. Deploy updated model (e.g., SageMaker endpoint or local llama.cpp server).
-
 ---
 
 ## Quickstart (Local)
@@ -239,6 +213,34 @@ requirements.txt    # Python dependencies
 docker-compose.yaml # Dev compose (frontend + backend)
 docs/               # Diagrams, slides
 ```
+
+---
+
+## System Overview
+
+- **Frontend**: React + TailwindCSS (`frontend/`)
+- **Backend**: FastAPI (`backend/`)
+- **RAG**: FAISS + SentenceTransformers (`RAG/`)
+- **Feedback**: WildFeedback satisfaction inference (`wildfeedback/`)
+- **LLM**: LLaMA 3.x (Nous Hermes) with LoRA fine-tuning and GGUF inference
+- **Containers**: Docker + Docker Compose
+- **Cloud (optional)**: AWS S3 for data, SageMaker for training/hosting
+
+## Technologies
+
+- **Models**: LLaMA 3.x (Nous Hermes variant)
+- **Fine-tuning**: LoRA via PEFT
+- **Quantization & Inference**: llama.cpp (GGUF)
+- **Frameworks**: Hugging Face Transformers, PEFT, PyTorch
+- **Cloud Services**: AWS S3, AWS SageMaker
+
+## Learning Loop
+
+1. Store raw conversations in S3 (or locally in `wildfeedback/data/conversations_raw.json`).
+2. WildFeedback generates structured training data and satisfaction labels.
+3. LoRA fine-tuning on base LLaMA model (Hermes 3).
+4. Merge LoRA → base; convert HF weights to GGUF via llama.cpp and quantize (e.g., Q8_0).
+5. Deploy updated model (e.g., SageMaker endpoint or local llama.cpp server).
 
 ---
 
