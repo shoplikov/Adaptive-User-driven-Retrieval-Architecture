@@ -328,5 +328,243 @@
         "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f834eec6cf0>: Failed to establish a new connection: [Errno 111] Connection refused'))]"
       }
     ]
+  },
+  {
+    "conversation_id": "39ae2612-08c7-49b7-af94-a26c07069e1e",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Привет",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Здравствуйте! Я могу помочь вам узнать, как получить услугу \"Проверка документов, выданных egov.kz\" через портал \"электронного правительства\". Вот пошаговая инструкция:\n\n1. Авторизуйтесь на портале или зарегистрируйтесь.\n2. Перейдите в Сервис \"Проверка услуг, полученных через портал электронного правительства или в НАО ГК\".\n3. Заполните обязательные поля электронного запроса: Уникальный код запроса (УК) и ИИН/БИН.\n4. Если документ был получен в НАО ГК \"Правительство для граждан\", поставьте галочку в пункте: Услуга оказана в НАО ГК \"Правительство для граждан\".\n5. Нажмите кнопку \"Отправить запрос\".\n\nТаким образом, вы сможете проверить, была ли услуга оказана через портал \"электронного правительства\" или в НАО ГК \"Правительство для граждан\", и скачать документ (при наличии) в формате PDF."
+      }
+    ]
+  },
+  {
+    "conversation_id": "e04784e9-6f75-466e-b48c-c06cb4fc0b41",
+    "turns": [
+      {
+        "role": "user",
+        "text": "привет",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Здравствуйте! Я могу помочь вам узнать, как получить услугу онлайн через портал \"Электронное правительство\" или НАО ГК \"Правительство для граждан\". Если вы хотите проверить, оказана ли услуга на этом портале или в НАО ГК, а также скачать электронный документ (при наличии), то можно выполнить следующие шаги:\n\n1. Авторизуйтесь на портале и перейдите в Сервис \"Проверка услуг, полученных через портал Электронного правительства или в НАО ГК\" . \n2. Заполните обязательные поля электронного запроса: Уникальный код запроса (УК) и ИИН/БИН. Также если документ был получен в НАО ГК, поставьте галочку в пункте \"Услуга оказана в НАО ГК «Правительство для граждан»\".\n3. Нажмите кнопку \"Запросить проверку\" и подождите результат.\n\nЕсли вам нужна помощь с регистрацией на портале или использованием мобильного приложения, я с радостью помогу! Удачи в получении информации о предоставленных услугах!"
+      }
+    ]
+  },
+  {
+    "conversation_id": "0646b21d-8309-4613-a83b-546002a5cf7b",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Здравствуйте. Как записать ребенка-инвалида в юношеские спортивную школу",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Для записи ребенка-инвалида в юношескую спортивную школу, необходимо обратиться в соответствующий орган по вопросам образования и социального обеспечения:\n\n1. Если вы обращаетесь на портале «Электронного правительства» Казахстана (www.e-gov.kz), перейдите на раздел «Молодежь», а затем выберите пункт «Юношеские спортивные школы». Там можно найти информацию о доступных спортивных школах, а также заполнить заявку в электронном виде.\n\n2. Если вы хотите обратиться в организацию напрямую, вам нужно:\n\n- Авторизоваться на сайте организации или посетить ее филиал;\n- Заполнить заявку на запись ребенка в спортивную школу;\n- Предоставить необходимые документы, подтверждающие статус инвалида и другие сведения о ребенке.\n\nВажно учесть, что каждый регион может иметь свои особенности и требования к процедуре записи ребенка-инвалида. Поэтому рекомендуется уточнить все детали у местного органа социального обеспечения или спортивной школы в конкретном районе."
+      }
+    ]
+  },
+  {
+    "conversation_id": "c649f00d-8782-463d-94d4-4c2ce542851d",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Здравствуй, я бы хотел написать заявление в суд",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=30)]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "24ae282b-220f-44a9-a2b1-089f75c08e3b",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Здравствуй, я бы хотел написать заявление в суд",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Вам следует обратиться к соответствующему судебному органу по месту своего проживания или делопроизводства. Важно знать, для какого именно суда вы хотите подавать заявление (городской, районный, апелляционный и т.д.). Информацию о порядке обращения к суду в России можно найти на официальном сайте Российской Федерации или обратиться за помощью в местной прокуратуре.\n\nДля получения более точных указаний по вашему конкретному случаю, пожалуйста, дайте мне знать, в каком именно суде вы хотите подать заявление и чем оно касается."
+      }
+    ]
+  },
+  {
+    "conversation_id": "ec6abb8b-416a-48f8-80b4-a695f1e052e3",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Hi",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Hello! How can I assist you today?"
+      }
+    ]
+  },
+  {
+    "conversation_id": "cd804858-8224-48fd-9ddf-27c47a00de88",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Imagine you are an expert in climate policy and economics. Summarize the key challenges that developing countries face when transitioning to renewable energy sources, focusing on financing, infrastructure, and political stability. Then propose at least three innovative policy mechanisms or international collaborations that could realistically accelerate this transition while minimizing social inequality and economic disruption. Finally, compare these proposed mechanisms with existing approaches used in the European Union and explain whether they could be adapted for regions such as Sub-Saharan Africa or Southeast Asia.",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "c8abc399-0f38-496d-9032-77b620be36d4",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Imagine you are an expert in climate policy and economics. Summarize the key challenges that developing countries face when transitioning to renewable energy sources, focusing on financing, infrastructure, and political stability. Then propose at least three innovative policy mechanisms or international collaborations that could realistically accelerate this transition while minimizing social inequality and economic disruption. Finally, compare these proposed mechanisms with existing approaches used in the European Union and explain whether they could be adapted for regions such as Sub-Saharan Africa or Southeast Asia.",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "ccb456c9-fd23-472e-9236-b1effd1d8ec8",
+    "turns": [
+      {
+        "role": "user",
+        "text": "рун",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=30)]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "af7e2d24-65b3-40c5-9b87-43ca8951d1c0",
+    "turns": [
+      {
+        "role": "user",
+        "text": "hi",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Hello! How can I assist you today?"
+      }
+    ]
+  },
+  {
+    "conversation_id": "45695ea8-56b0-4553-a834-4fc3087d78f7",
+    "turns": [
+      {
+        "role": "user",
+        "text": "How can user feedback signals (like clicks, dwell time, and query reformulations) be integrated into a RAG pipeline to improve accuracy over time, and what are the main trade-offs compared to traditional RAG systems?",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=30)]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "89a7cb5c-65c0-4438-bbc1-e4bc7b2fc1f8",
+    "turns": [
+      {
+        "role": "user",
+        "text": "hi",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Hello! How are you doing today?"
+      }
+    ]
+  },
+  {
+    "conversation_id": "2fd2d30d-1790-450f-84c3-7b6124736cc1",
+    "turns": [
+      {
+        "role": "user",
+        "text": "How can user feedback signals (like clicks, dwell time, and query reformulations) be integrated into a RAG pipeline to improve accuracy over time, and what are the main trade-offs compared to traditional RAG systems?",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "[Error contacting LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=30)]"
+      }
+    ]
+  },
+  {
+    "conversation_id": "b9fcbfad-a04c-496f-a13b-db46fb3dcba4",
+    "turns": [
+      {
+        "role": "user",
+        "text": "How can user feedback signals (like clicks, dwell time, and query reformulations) be integrated into a RAG pipeline to improve accuracy over time, and what are the main trade-offs compared to traditional RAG systems?",
+        "sat_dsat": "SAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Integrating user feedback signals such as clicks, dwell time, and query reformulations into a RAG (Relevance at Answering Goal) pipeline can significantly enhance the accuracy of information retrieval systems over time. These signals can provide valuable insights into how users interact with the system, helping to identify areas where the results might be improved or rephrased to better meet user needs. Here's an overview of how these signals can be integrated and the trade-offs compared to traditional RAG systems:\n\n### 1. Click-through data:\n- **Integration**: Use click-through data to understand which answers are clicked more frequently by users. This could help identify topically relevant documents that might not rank as highly in a purely relevance-based score.\n- **Trade-off**: Requires careful consideration of what constitutes a 'click' and might lead to biasing the results towards popular or easily accessible information.\n\n### 2. Dwell time data:\n- **Integration**: Dwell time can indicate how interesting or relevant a document is to the user. Longer dwell times suggest that users found the content valuable, whereas short dwell times may imply confusion or irrelevance.\n- **Trade-off**: This requires setting thresholds for 'dwell' and might need to account for differences in devices (e.g., desktop vs mobile).\n\n### 3. Query reformulations:\n- **Integration**: Track when a user rephrases their query after the initial search, as this can indicate dissatisfaction or confusion with the results.\n- **Trade-off**: Requires sophisticated query analysis to discern meaningful reformulations and might be prone to noise if users simply change wording.\n\n### 4. Feedback loops:\n- **Integration**: Implement feedback mechanisms where users can directly rate or comment on individual answers, providing a qualitative measure of relevance beyond just click-through data.\n- **Trade-off**: Requires substantial user engagement and potentially more complex system design to interpret the feedback accurately.\n\n### Trade-offs Compared to Traditional RAG Systems:\n\n- **Complexity**: Integrating these signals adds complexity to both the retrieval and ranking components of the search pipeline. It may require a significant amount of data for meaningful analysis.\n- **Cost**: Monitoring and analyzing user interactions can be costly, especially if implemented at scale.\n- **Trustworthiness**: While user feedback is valuable, it's also subjective and might not always accurately reflect the true relevance or usefulness of an answer.\n- **Accuracy vs. Precision**: While incorporating these signals can improve overall accuracy by better aligning with user needs, it may come at the cost of precision—i.e., ranking"
+      }
+    ]
+  },
+  {
+    "conversation_id": "d76ef015-1bb2-4601-a20c-7fed28951b57",
+    "turns": [
+      {
+        "role": "user",
+        "text": "как специальное государственное пособие",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Государственное пособие - это специальный вид социальной помощи, предоставляемой правительством или муниципалитетом в определенные периоды жизни человека. Это может быть пособие на ребенка, на семью с детьми, пенсионеры и другие категории граждан. В Казахстане такие пособия также могут предоставляться в виде специальных выплат, например, для поддержки семей после чрезвычайных происшествий или стихийных бедствий.\n\nПолучать государственное пособие можно через портал \"Электронного правительства\", обратившись в соответствующий орган власти или муниципалитет. Документы и требования могут варьироваться в зависимости от вида пособия, но обычно для получения необходимо предоставить документы на право на пособие (например, свидетельство о рождении ребенка, удостоверение пенсионера) и подтверждение социального положения (например, заявление о безработице или наличие льготного жилья)."
+      }
+    ]
+  },
+  {
+    "conversation_id": "7743dd0f-c3ee-4e8d-9f26-3205dd26017d",
+    "turns": [
+      {
+        "role": "user",
+        "text": "как получить специальное государственное пособие",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Чтобы получить специальное государственное пособие, необходимо выполнить следующие шаги:\n\n1. Оформите заявку на получение пособия в местном органе социальной защиты населения или по телефону, указанному на официальном сайте.\n\n2. Уполномоченный орган проверит вашу заявку и предоставит необходимые документы (к примеру, свидетельство о рождении ребенка, справки из школы о недостатке средств для оплаты обучения, медицинские документы).\n\n3. После проведения проверок и при получении положительного решения, вам будет направлено сообщение об указании места назначения для получения пособия.\n\n4. Убедитесь, что у вас есть паспорт или другое удостоверение личности и другие необходимые документы.\n\n5. Привезите все необходимые документы в указанное место и получите свое специальное государственное пособие.\n\nВажно помнить, что правила получения пособий могут изменяться, поэтому рекомендуется проверять информацию на официальном сайте органов социальной защиты или по телефону, предоставленному для обращения."
+      }
+    ]
+  },
+  {
+    "conversation_id": "ae626698-1763-42f4-8afe-ef56504ab38a",
+    "turns": [
+      {
+        "role": "user",
+        "text": "как получить специальное государственное пособие",
+        "sat_dsat": "DSAT"
+      },
+      {
+        "role": "assistant",
+        "text": "Чтобы получить специальное государственное пособие, вам нужно выполнить следующие шаги:\n\n1. Узнайте о критериях получения пособия и соберите необходимые документы. Пособие может предоставляться в зависимости от вашей ситуации (например, инвалидам, пенсионерам или семьям с детьми).\n\n2. Зайти на портал государственных услуг или официальный сайт, связанный с предоставлением пособий.\n\n3. Найти соответствующую сервисную страницу и выбрать пункт \"Специальное государственное пособие\".\n\n4. Введите свои личные данные (имя, фамилия, дата рождения) и другие необходимые данные, указанные в требованиях к получению пособия.\n\n5. Подготовьте все необходимые документы и приложите их в выбранном формате (фотография, сканы или снимки).\n\n6. Убедитесь, что ваша заявка соответствует требованиям по срокам и содержанию.\n\n7. Проверьте корректность всех данных и отправьте свою заявку.\n\n8. Подождите указанный срок для рассмотрения вашей заявки. Возможно, вам придется ответить на запросы от оператора услуги или внести дополнительную документацию.\n\n9. Если ваша заявка будет принята, вы получите специальное государственное пособие. В противном случае, предоставьте необходимые исправления и уделите больше внимания требованиям к заявке.\n\nНе забудьте следить за сроками и условиями предоставления пособия и своевременно подавать все необходимые документы для получения выгоды от государственной поддержки."
+      }
+    ]
   }
 ]
